@@ -100,6 +100,7 @@ class Curve {
     // Witness a binary representation of s
     // Constraint the binary representation
     // Compute a running sum given the binary representation
+    // p ** s
   }
 
   neg(p) {

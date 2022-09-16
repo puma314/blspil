@@ -7,9 +7,9 @@ class Engine {
   constructor(instructions) {
     this.F = new F(instructions);
     this.F2 = new F2(this.F);
-    this.G1 = new Curve(this.F);
-    this.G2 = new Curve(this.F2);
     this.F12 = new F12(this.F);
+    this.G1 = new Curve(this.F, 4n);
+    this.G2 = new Curve(this.F2, [4n, 4n]);
   }
 
   line_func() {}
