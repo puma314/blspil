@@ -1,14 +1,28 @@
-const F = require("./fields").F;
+const F1 = require("./fields").F1;
 const F2 = require("./fields").F2;
-const F12 = require("./fields").F12;
+const F3 = require("./fields").F3;
 const Curve = require("./curve");
 
 class Engine {
   constructor(instructions) {
-    this.F = new F(instructions);
-    this.F2 = new F2(this.F);
-    this.F12 = new F12(this.F);
-    this.G1 = new Curve(this.F, 4n);
+    this.F1 = new F1(instructions, function (a) {
+      return this.neg(a);
+    });
+    this.F2 = new F2(this.F1, function (a) {
+      return [
+        this.F.sub(a[0], a[1]),
+        this.F.add(a[0], a[1])
+      ]
+    });
+    this.F6 = new F3(this.F2, function (a) {
+      return [
+        this.F.mulByNonResidue(a[2]),
+        a[0],
+        a[1]
+      ];
+    });
+    this.F12 = new F2(this.F6);
+    this.G1 = new Curve(this.F1, 4n);
     this.G2 = new Curve(this.F2, [4n, 4n]);
   }
 
