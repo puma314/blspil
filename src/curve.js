@@ -14,25 +14,29 @@ class Curve {
     return [0, 0];
   }
 
-  is_inf(p) {}
+  is_inf(p) {
+    return this.F.mul(p[0], p[1]);
+  }
 
   is_on_curve(p) {
     // TODO refactor this using cmove
-    if (this.is_inf(p)) {
-      return 1;
-    }
+    const is_inf = this.is_inf(p);
+
+    const if_inf = this.F.constant(1);
+
     const [p_x, p_y] = p;
     const y_squared = this.F.square(p_y);
     const x_cubed = this.F.mul(this.F.square(p_x), p_x);
     const rhs = this.F.add(x_cubed, this.b);
-    return this.F.eq(y_squared, rhs);
+    const res = this.F.eq(y_squared, rhs);
+
+    return this.F.cmove(is_inf, if_inf, res);
   }
 
   double(p) {
-    // TODO refactor this using cmove
-    if (this.is_inf(p)) {
-      return p;
-    }
+    const is_inf = this.is_inf(p);
+    const if_inf = p;
+
     const [p_x, p_y] = p;
     const x_squared = this.F.square(p_x);
     const three_x_squared = this.F.mul(x_squared, this.F.constant(3n));
@@ -47,7 +51,12 @@ class Curve {
     const newy_term3 = this.F.neg(p_y);
     const newy_pt1 = this.F.add(newy_term1, newy_term2);
     const newy = this.F.add(newy_pt1, newy_term3);
-    return [newx, newy];
+    const res = [newx, newy];
+
+    return [
+      this.F.cmove(is_inf, if_inf[0], res[0]),
+      this.F.cmove(is_inf, if_inf[1], res[1]),
+    ];
   }
 
   add(p, q) {
@@ -115,7 +124,7 @@ class Curve {
   eq(p, q) {
     const [p_x, p_y] = p;
     const [q_x, q_y] = q;
-    return this.F.eq(p_x, q_x) && this.F.eq(p_y, q_y);
+    return this.F.mul(this.F.eq(p_x, q_x), this.F.eq(p_y, q_y));
   }
 
   twist(p) {
