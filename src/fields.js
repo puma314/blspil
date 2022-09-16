@@ -4,17 +4,23 @@ class F {
     this.instructions = instructions;
   }
 
-  double() {}
+  add(a, b) {}
 
-  add() {}
+  neg(a) {}
 
-  mul() {}
+  mul(a, b) {}
 
-  square() {}
+  exp(a, s) {}
 
-  eq() {}
+  square(a) {}
 
-  neg() {}
+  inv(a) {}
+
+  div(a, b) {
+    return this.mul(a, this.inv(b));
+  }
+
+  eq(a, b) {}
 }
 
 class F2 {
@@ -23,17 +29,23 @@ class F2 {
     this.base_field = base_field;
   }
 
-  double() {}
+  add(a, b) {}
 
-  add() {}
+  neg(a) {}
 
-  mul() {}
+  mul(a, b) {}
 
-  square() {}
+  exp(a, s) {}
 
-  eq() {}
+  square(a) {}
 
-  neg() {}
+  inv(a) {}
+
+  div(a, b) {
+    return this.mul(a, this.inv(b));
+  }
+
+  eq(a, b) {}
 }
 
 class F12 {
@@ -41,17 +53,24 @@ class F12 {
   constructor(base_field) {
     this.base_field = base_field;
   }
-  double() {}
 
-  add() {}
+  add(a, b) {}
 
-  mul() {}
+  neg(a) {}
 
-  square() {}
+  mul(a, b) {}
 
-  eq() {}
+  exp(a, s) {}
 
-  neg() {}
+  square(a) {}
+
+  inv(a) {}
+
+  div(a, b) {
+    return this.mul(a, this.inv(b));
+  }
+
+  eq(a, b) {}
 }
 
 module.exports.F = F;

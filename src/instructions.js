@@ -6,6 +6,11 @@ class FOps {
     return (a * b) % field_modulus;
   }
 
+  inv(a) {
+    // Witness inverse
+    // Prove inverse
+  }
+
   is_zero(a) {
     return a % field_modulus == 0;
   }

@@ -1,5 +1,6 @@
 const F = require("./fields").F;
 const F2 = require("./fields").F2;
+const assert = require("assert");
 
 class Curve {
   constructor(F) {
@@ -10,19 +11,21 @@ class Curve {
 
   is_on_curve() {}
 
-  double() {}
+  double(p) {}
 
-  add() {}
+  add(p, q) {}
 
-  neg() {}
+  scalar_mul(p, s) {}
 
-  eq() {}
+  neg(p) {}
 
-  twist() {
+  eq(p, q) {}
+
+  twist(p) {
     assert(this.F instanceof F2);
   }
 
-  cast_point_to_fq12() {
+  cast_point_to_fq12(p) {
     assert(this.F instanceof F);
   }
 }
