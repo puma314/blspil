@@ -1,45 +1,147 @@
-class F {
-  degree = 1;
-  constructor(instructions) {
-    this.instructions = instructions;
+function bits(s) {
+  let E = BigInt(s);
+  const res = [];
+  while (E) {
+      if (E & BigInt(1)) {
+          res.push(1);
+      } else {
+          res.push( 0 );
+      }
+      E = E >> BigInt(1);
+  }
+  return res;
+}
+
+function exp(F, base, s) {
+
+  if (s == 0n) return F.one;
+
+  const n = bits(s);
+
+  if (n.length==0) return F.one;
+
+  let res = base;
+
+  for (let i=n.length-2; i>=0; i--) {
+
+      res = F.square(res);
+
+      if (n[i]) {
+          res = F.mul(res, base);
+      }
   }
 
-  add(a, b) {}
+  return res;
+}
 
-  neg(a) {}
+class F1 {
+  constructor(I, mulByNonResidue) {
+    if (mulByNonResidue) {
+      this.mulByNonResidue = mulByNonResidue.bind(this);
+    }
+    this.degree = 1;
+    this.I = I;
+    this.one = this.I.constant(1);
+    this.zero = this.I.constant(0);
+  }
 
-  mul(a, b) {}
+  add(a, b) {
+    return this.I.add(a,b);
+  }
 
-  exp(a, s) {}
+  sub(a, b) {
+    return this.I.sub(a,b);
+  }
 
-  square(a) {}
+  neg(a) {
+    return this.sub(this.zero,a);
+  }
 
-  inv(a) {}
+  mul(a, b) {
+    return this.I.mul(a,b);
+  }
+
+  exp(a, s) {
+    return exp(this, a, s)
+  }
+
+  square(a) {
+    return this.mul(a,a);
+  }
+
+  inv(a) {
+    return this.I.inv(a);
+  }
 
   div(a, b) {
     return this.mul(a, this.inv(b));
   }
 
-  eq(a, b) {}
+  eq(a, b) {
+    this.I.assert_equal(a, b);
+  }
 }
 
 class F2 {
-  degree = 2;
-  constructor(base_field) {
-    this.base_field = base_field;
+  constructor(F, mulByNonResidue) {
+    if (mulByNonResidue) {
+      this.mulByNonResidue = mulByNonResidue.bind(this);
+    }
+    this.degree = F.degree*2
+    this.F = F;
+    this.one = [
+      this.F.one,
+      this.F.zero
+    ];
+    this.zero = [
+      this.F.zero,
+      this.F.zero
+    ];
+
   }
 
-  add(a, b) {}
+  add(a, b) {
+    return [
+      this.F.add(a[0], b[0]),
+      this.F.add(a[1], b[1]),
+    ]
+  }
 
-  neg(a) {}
+  sub(a, b) {
+    return [
+      this.F.sub(a[0], b[0]),
+      this.F.sub(a[1], b[1]),
+    ]
+  }
 
-  mul(a, b) {}
+  neg(a) {
+    return this.sub(this.zero,a);
+  }
 
-  exp(a, s) {}
+  mul(a, b) {
+    return [
+      this.F.add(this.F.mul(a[0], b[0]), this.F.mulByNonResidue(this.F.mul(a[1], b[1]))),
+      this.F.add(this.F.mul(a[0], b[1]), this.F.mul(a[1], b[0])),
+    ];
+  }
 
-  square(a) {}
+  exp(a, s) {
+    return exp(this, a, s)
+  }
 
-  inv(a) {}
+  square(a) {
+    return this.mul(a,a);
+  }
+
+  inv(a) {
+    const t0 = this.F.square(a[0]);
+    const t1 = this.F.square(a[1]);
+    const t2 = this.F.sub(t0, this.F.mulByNonResidue(t1));
+    const t3 = this.F.inv(t2);
+    return [
+        this.F.mul(a[0], t3),
+        this.F.neg(this.F.mul( a[1], t3)) ];
+  }
 
   div(a, b) {
     return this.mul(a, this.inv(b));
@@ -48,31 +150,124 @@ class F2 {
   eq(a, b) {}
 }
 
-class F12 {
-  degree = 12;
-  constructor(base_field) {
-    this.base_field = base_field;
+class F3 {
+  constructor(F, mulByNonResidue) {
+    if (mulByNonResidue) {
+      this.mulByNonResidue = mulByNonResidue.bind(this);
+    }
+    this.degree = F.degree*3;
+    this.F = F;
+    this.one = [
+      this.F.one,
+      this.F.zero,
+      this.F.zero
+    ];
+    this.zero = [
+      this.F.zero,
+      this.F.zero,
+      this.F.zero
+    ];
   }
 
-  add(a, b) {}
+  add(a, b) {
+    return [
+      this.F.add(a[0], b[0]),
+      this.F.add(a[1], b[1]),
+      this.F.add(a[2], b[2]),
+    ]
+  }
 
-  neg(a) {}
+  sub(a, b) {
+    return [
+      this.F.sub(a[0], b[0]),
+      this.F.sub(a[1], b[1]),
+      this.F.sub(a[2], b[2]),
+    ]
+  }
+  neg(a) {
+    return this.sub(this.zero,a);
+  }
 
-  mul(a, b) {}
+  mul(a, b) {
+    const aA = this.F.mul(a[0] , b[0]);
+    const bB = this.F.mul(a[1] , b[1]);
+    const cC = this.F.mul(a[2] , b[2]);
 
-  exp(a, s) {}
+    return [
+        this.F.add(
+            aA,
+            this.F.mulByNonResidue(
+                this.F.sub(
+                    this.F.mul(
+                        this.F.add(a[1], a[2]),
+                        this.F.add(b[1], b[2])),
+                    this.F.add(bB, cC)))),    // aA + non_residue*((b+c)*(B+C)-bB-cC),
+        this.F.add(
+            this.F.sub(
+                this.F.mul(
+                    this.F.add(a[0], a[1]),
+                    this.F.add(b[0], b[1])),
+                this.F.add(aA, bB)),
+            this.F.mulByNonResidue( cC)),   // (a+b)*(A+B)-aA-bB+non_residue*cC
 
-  square(a) {}
+        this.F.add(
+            this.F.sub(
+                this.F.mul(
+                    this.F.add(a[0], a[2]),
+                    this.F.add(b[0], b[2])),
+                this.F.add(aA, cC)),
+            bB)
+      ];
+  }
 
-  inv(a) {}
+  exp(a, s) {
+    return exp(this, a, s)
+  }
+
+  square(a) {
+    return this.mul(a,a);
+  }
+
+  inv(a) {
+    const t0 = this.F.square(a[0]);             // t0 = a^2 ;
+    const t1 = this.F.square(a[1]);             // t1 = b^2 ;
+    const t2 = this.F.square(a[2]);             // t2 = c^2;
+    const t3 = this.F.mul(a[0],a[1]);           // t3 = ab
+    const t4 = this.F.mul(a[0],a[2]);           // t4 = ac
+    const t5 = this.F.mul(a[1],a[2]);           // t5 = bc;
+    // c0 = t0 - non_residue * t5;
+    const c0 = this.F.sub(t0, this.F.mulByNonResidue(t5));
+    // c1 = non_residue * t2 - t3;
+    const c1 = this.F.sub(this.F.mulByNonResidue(t2), t3);
+    const c2 = this.F.sub(t1, t4);              // c2 = t1-t4
+
+    // t6 = (a * c0 + non_residue * (c * c1 + b * c2)).inv();
+    const t6 =
+        this.F.inv(
+            this.F.add(
+                this.F.mul(a[0], c0),
+                this.F.mulByNonResidue(
+                    this.F.add(
+                        this.F.mul(a[2], c1),
+                        this.F.mul(a[1], c2)))));
+
+    return [
+        this.F.mul(t6, c0),         // t6*c0
+        this.F.mul(t6, c1),         // t6*c1
+        this.F.mul(t6, c2)];        // t6*c2
+  }
 
   div(a, b) {
     return this.mul(a, this.inv(b));
   }
 
-  eq(a, b) {}
+  eq(a, b) {
+    this.F.eq(a[0], b[0]);
+    this.F.eq(a[1], b[1]);
+    this.F.eq(a[2], b[2]);
+  }
 }
 
-module.exports.F = F;
+module.exports.F1 = F1;
 module.exports.F2 = F2;
-module.exports.F12 = F12;
+module.exports.F3 = F3;
