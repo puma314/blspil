@@ -33,7 +33,7 @@ class Curve {
     const y_squared = this.F.square(p_y);
     const x_cubed = this.F.mul(this.F.square(p_x), p_x);
     const rhs = this.F.add(x_cubed, this.b);
-    const res = this.F.eq(y_squared, rhs);
+    const res = this.F.is_eq(y_squared, rhs);
 
     return this.I.cmov(is_inf, if_inf, res);
   }
