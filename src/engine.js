@@ -22,8 +22,8 @@ class Engine {
       ];
     });
     this.F12 = new F2(this.F6);
-    this.G1 = new Curve(this.F1);
-    this.G2 = new Curve(this.F2);
+    this.G1 = new Curve(this.F1, 4n);
+    this.G2 = new Curve(this.F2, [4n, 4n]);
   }
 
   line_func() {}
