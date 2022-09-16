@@ -1,29 +1,36 @@
 class FOps {
-  curve_order = 52435875175126190479447740508185965837690552500527637822603658699938581184513n;
-  field_modulus = 4002409555221667393417789825735904156556882819939007885332058136124031650490837864442687629129015664037894272559787n;
+  curve_order =
+    52435875175126190479447740508185965837690552500527637822603658699938581184513n;
+  field_modulus =
+    4002409555221667393417789825735904156556882819939007885332058136124031650490837864442687629129015664037894272559787n;
 
   mul(a, b) {
     return (a * b) % this.field_modulus;
   }
 
   inv(a) {
-      if (!a) throw new Error("Division by zero");
+    if (!a) throw new Error("Division by zero");
 
-      let t = 0n;
-      let r = this.field_modulus;
-      let newt = 1n;
-      let newr = a % this.field_modulus;
-      while (newr) {
-          let q = r/newr;
-          [t, newt] = [newt, t-q*newt];
-          [r, newr] = [newr, r-q*newr];
-      }
-      if (t<0n) t += this.field_modulus;
-      return t;
+    let t = 0n;
+    let r = this.field_modulus;
+    let newt = 1n;
+    let newr = a % this.field_modulus;
+    while (newr) {
+      let q = r / newr;
+      [t, newt] = [newt, t - q * newt];
+      [r, newr] = [newr, r - q * newr];
+    }
+    if (t < 0n) t += this.field_modulus;
+    return t;
   }
 
   is_zero(a) {
-    return a % this.field_modulus == 0;
+    if (a % this.field_modulus == 0) {
+      return 1n;
+    } else {
+      return 0n;
+    }
+    // return a % this.field_modulus == 0;
   }
 
   assert_equal(a, b) {
@@ -44,7 +51,8 @@ class FOps {
     Conditional mov.
   */
   cmov(c, a, b) {
-    if (c!=0n) {
+    console.log("c", c);
+    if (c != 0n) {
       return a;
     } else {
       return b;

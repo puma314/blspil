@@ -9,21 +9,14 @@ class Engine {
       return this.neg(a);
     });
     this.F2 = new F2(this.F1, function (a) {
-      return [
-        this.F.sub(a[0], a[1]),
-        this.F.add(a[0], a[1])
-      ]
+      return [this.F.sub(a[0], a[1]), this.F.add(a[0], a[1])];
     });
     this.F6 = new F3(this.F2, function (a) {
-      return [
-        this.F.mulByNonResidue(a[2]),
-        a[0],
-        a[1]
-      ];
+      return [this.F.mulByNonResidue(a[2]), a[0], a[1]];
     });
     this.F12 = new F2(this.F6);
-    this.G1 = new Curve(this.F1, 4n);
-    this.G2 = new Curve(this.F2, [4n, 4n]);
+    this.G1 = new Curve(instructions, this.F1, 4n);
+    this.G2 = new Curve(instructions, this.F2, [4n, 4n]);
   }
 
   line_func() {}
