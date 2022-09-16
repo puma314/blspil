@@ -125,10 +125,43 @@ class Curve {
     const xcoeffs = [[this.F.add(p_x[0], this.F.neg(p_x[1])), p_x[1]]];
     const ycoeffs = [[this.F.add(p_y[0], this.F.neg(p_y[1])), p_y[1]]];
 
-    const nx = [xcoeffs[0], 0, 0, 0, 0, 0, xcoeffs[1], 0, 0, 0, 0, 0];
-    const ny = [ycoeffs[0], 0, 0, 0, 0, 0, ycoeffs[1], 0, 0, 0, 0, 0];
+    const nx = [
+      [
+        [xcoeffs[0], 0n],
+        [0n, 0n],
+        [0n, 0n],
+      ],
+      [
+        [xcoeffs[1], 0n],
+        [0n, 0n],
+        [0n, 0n],
+      ],
+    ];
+    const ny = [
+      [
+        [ycoeffs[0], 0n],
+        [0n, 0n],
+        [0n, 0n],
+      ],
+      [
+        [ycoeffs[1], 0n],
+        [0n, 0n],
+        [0n, 0n],
+      ],
+    ];
 
-    const w = [0, 1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0];
+    const w = [
+      [
+        [0n, 1n],
+        [0n, 0n],
+        [0n, 0n],
+      ],
+      [
+        [0n, 0n],
+        [0n, 0n],
+        [0n, 0n],
+      ],
+    ];
     const w_sq = F12.square(w);
     const w_cubed = F12.mul(w_sq, w);
     return [F12.div(nx, w_sq), F12.div(ny, w_cubed)];
@@ -141,8 +174,30 @@ class Curve {
     }
     const [p_x, p_y] = p;
     return [
-      [p_x, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0],
-      [p_y, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0],
+      [
+        [
+          [p_x, 0n],
+          [0n, 0n],
+          [0n, 0n],
+        ],
+        [
+          [0n, 0n],
+          [0n, 0n],
+          [0n, 0n],
+        ],
+      ],
+      [
+        [
+          [p_y, 0n],
+          [0n, 0n],
+          [0n, 0n],
+        ],
+        [
+          [0n, 0n],
+          [0n, 0n],
+          [0n, 0n],
+        ],
+      ],
     ];
   }
 }
