@@ -1,0 +1,8 @@
+{
+  "dependencies": {
+    "chai": "^4.3.6",
+    "mocha": "^10.0.0",
+    "pil-stark": "^0.0.25",
+    "pilcom": "^0.0.17"
+  }
+}
