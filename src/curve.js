@@ -1,15 +1,30 @@
-function is_inf() {}
+const F1 = require("./fields").F1;
+const F2 = require("./fields").F2;
 
-function is_on_curve() {}
+class Curve {
+  constructor(F) {
+    this.F = F;
+  }
 
-function double() {}
+  is_inf() {}
 
-function add() {}
+  is_on_curve() {}
 
-function mul() {}
+  double() {}
 
-function eq() {}
+  add() {}
 
-function neg() {}
+  neg() {}
 
-function twist() {}
+  eq() {}
+
+  twist() {
+    assert(this.F instanceof F2);
+  }
+
+  cast_point_to_fq12() {
+    assert(this.F instanceof F1);
+  }
+}
+
+module.exports = Curve;

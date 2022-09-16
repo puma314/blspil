@@ -1,5 +1,6 @@
 // import path = require('path');
-const pairing = require("../src/pairing").pairing;
+const instructions = require("../src/instructions");
+const Engine = require("../src/curve");
 const path = require("path");
 const assert = require("chai").assert;
 
@@ -19,7 +20,8 @@ describe("BLS", function () {
         927553665492332455747201965776037880757740193453592970025027978793976877002675564980949289727957565575433344219582n,
       ],
     ];
-    const g12 = pairing(g2, g1);
+    const engine = new Engine(instructions);
+    const g12 = engine.pairing(g2, g1);
     const expectedg12 = [
       3408834164464458755751340723502736743445402614640994055433339214424916442641449510670327077303074893591740399366532n,
       1017299873256115394687936133146817339783508925356207904663165117501336940438300180831508525168135575931758510829235n,
