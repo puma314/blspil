@@ -1,4 +1,4 @@
-const F1 = require("./fields").F1;
+const F = require("./fields").F;
 const F2 = require("./fields").F2;
 
 class Curve {
@@ -23,7 +23,7 @@ class Curve {
   }
 
   cast_point_to_fq12() {
-    assert(this.F instanceof F1);
+    assert(this.F instanceof F);
   }
 }
 

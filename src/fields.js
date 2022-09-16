@@ -1,4 +1,4 @@
-class F1 {
+class F {
   degree = 1;
   constructor(instructions) {
     this.instructions = instructions;
@@ -37,6 +37,7 @@ class F2 {
 }
 
 class F12 {
+  degree = 12;
   constructor(base_field) {
     this.base_field = base_field;
   }
@@ -53,6 +54,6 @@ class F12 {
   neg() {}
 }
 
-module.exports.F1 = F1;
+module.exports.F = F;
 module.exports.F2 = F2;
 module.exports.F12 = F12;
