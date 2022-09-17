@@ -4,7 +4,7 @@ const F3 = require("./fields").F3;
 const Curve = require("./curve");
 const assert = require("chai").assert;
 
-const log_ate_loop_count = 62
+const log_ate_loop_count = 62;
 
 const g1 = [
   3685416753713387016781088315183077757961620795782546409894578378688607592378376318836054947676345821548104185464507n,
@@ -59,7 +59,7 @@ class Engine {
       // m = 3 * x1**2 / (2 * y1)
       // return m * (xt - x1) - (yt - y1)
       let num = F12.mul_escalar(F12.square(x1), 3);
-      let den = F12.add(y1, y1)
+      let den = F12.add(y1, y1);
       let m = F12.mul(num, F12.inv(den));
       let a = F12.add(xt, F12.neg(x1));
       let b = F12.add(y1, F12.neg(yt));
@@ -72,7 +72,12 @@ class Engine {
   }
 
   final_exponentiation(p) {
-    return F12.exp(p, Math.floor((instructions.field_modulus ** 12 - 1) / instructions.curve_order))
+    return F12.exp(
+      p,
+      Math.floor(
+        (instructions.field_modulus ** 12 - 1) / instructions.curve_order
+      )
+    );
   }
 
   miller_loop(p1, p2) {
@@ -89,12 +94,17 @@ class Engine {
         R = F12.add(R, Q);
       }
     }
-    return F12.exp(f, Math.floor((instructions.field_modulus ** 12 - 1) / instructions.curve_order))
+    return F12.exp(
+      f,
+      Math.floor(
+        (instructions.field_modulus ** 12 - 1) / instructions.curve_order
+      )
+    );
   }
 
   pairing(p2, p1) {
-    assert(this.G1.is_on_curve(p1));
-    assert(this.G2.is_on_curve(p2));
+    assert(this.G1.isOnCurve(p1));
+    assert(this.G2.isOnCurve(p2));
     const twisted = this.G2.twist(p2);
     const casted = this.G1.cast_point_to_fq12(p1);
     const res = this.miller_loop(twisted, casted);

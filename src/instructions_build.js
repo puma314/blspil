@@ -1,9 +1,15 @@
 class FOpsBuilder {
   constructor(pols) {
     this.pols = pols;
+    this.pA = pols.main.pA;
+    this.pB = pols.main.pB;
+    this.pC = pols.main.pC;
+    this.pD = pols.main.pD;
+    this.isConstant = pols.main.isConstant;
+    this.ConstVal = pols.main.ConstVal;
     this.instruction_counter = 0;
     this.address_counter = 0;
-    this.constant_counter = pols.pA.length - 1;
+    this.constant_counter = this.pA.length - 1;
     this.constant_mapping = new Map();
     this.zero = this.constant(0n);
     this.one = this.constant(1n);
@@ -67,14 +73,17 @@ class FOpsBuilder {
   isZero(a) {
     // isZero has 2 steps
     const addr_out1 = this.address_counter;
+    this.address_counter++;
+    // Fill this with a variable during execution
+    const addr_inter = this.address_counter;
+    this.address_counter++;
     for (var i = 0; i < 48; i++) {
       this.pA[this.instruction_counter] = a;
-      this.pB[this.instruction_counter] = constant_addr;
+      this.pB[this.instruction_counter] = addr_inter;
       this.pC[this.instruction_counter] = this.one;
       this.pD[this.instruction_counter] = addr_out1;
       this.instruction_counter++;
     }
-    this.address_counter++;
     const addr_out = this.address_counter;
     for (var i = 0; i < 48; i++) {
       this.pA[this.instruction_counter] = a;
@@ -155,11 +164,9 @@ class FOpsBuilder {
     if (existing) {
       return existing;
     }
-    this.pols.isConstant[this.constant_counter] = 1n;
+    this.isConstant[this.constant_counter] = 1n;
     for (var i = 0; i < 8; i++) {
-      this.pols.ConstVal[i][this.constant_counter] = BigInt(
-        a & 0xffffffffffffn
-      );
+      this.ConstVal[i][this.constant_counter] = BigInt(a & 0xffffffffffffn);
       a >>= 48n;
     }
     this.constant_mapping.set(a, this.constant_counter);

@@ -50,33 +50,41 @@ describe("test instructions_build", async function () {
   let constPols, cmPols;
   let pil;
   it("It should fill constants correctly", async () => {
-    pil = await compile(Fr, outPilFile, null, { defines: { N: 2 ** 16 } });
+    pil = await compile(Fr, "pil/main.pil", null);
     constPols = newConstantPolsArray(pil);
-    // const instructions = InstructionsBuilder(constPols);
-    // const engine = new Engine(instructions);
-    // engine.F1.add();
+    const instructions = new InstructionsBuilder(constPols);
+    const engine = new Engine(instructions);
+    engine.G1.add([1n, 2n], [3n, 4n]);
+    engine.G2.add(
+      [
+        [1n, 2n],
+        [3n, 4n],
+      ],
+      [
+        [5n, 6n],
+        [7n, 8n],
+      ]
+    );
+
+    // TODO we can add this once we're done with pairing
+    // engine.pairing(
+    //   [0, 1],
+    //   [
+    //     [2, 3],
+    //     [4, 5],
+    //   ]
+    // );
+
+    cmPols = newCommitPolsArray(pil);
+    await execute(cmPols.Arith, input);
+
+    const res = await verifyPil(Fr, pil, cmPols, constPols);
+    if (res.length != 0) {
+      console.log("Pil does not pass");
+      for (let i = 0; i < res.length; i++) {
+        console.log(res[i]);
+      }
+      assert(0);
+    }
   });
-
-  //   before(async function () {
-  //     pil = await compile(Fr, outPilFile, null, { defines: { N: 2 ** 16 } });
-
-  //     constPols = newConstantPolsArray(pil);
-
-  //     await buildConstants(constPols.Arith);
-  //   });
-
-  //   it("It should verify the binary operations pil", async () => {
-  //     cmPols = newCommitPolsArray(pil);
-  //     await execute(cmPols.Arith, input);
-
-  //     const res = await verifyPil(Fr, pil, cmPols, constPols);
-
-  //     if (res.length != 0) {
-  //       console.log("Pil does not pass");
-  //       for (let i = 0; i < res.length; i++) {
-  //         console.log(res[i]);
-  //       }
-  //       assert(0);
-  //     }
-  //   });
 });
