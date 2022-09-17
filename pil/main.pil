@@ -1,9 +1,12 @@
-const %N = 2**20;
+constant %N = 2**16;
 
-# include "arith.pil";
+include "arith.pil";
 
 namespace Global(%N);
-    pol constant L1;
+    pol constant L1;    // 1, 0, 0, 0, 0,
+    pol constant BYTE;
+    pol constant BYTE2;
+
 
 namespace main(%N);
 
@@ -45,8 +48,9 @@ namespace main(%N);
         ramVal[4],
         ramVal[5],
         ramVal[6],
-        ramVal[7],
-    }
+        ramVal[7]
+    };
+
     {
         pB, 
         Arith.b[0] + 2**16* Arith.b[1] + 2**32 * Arith.b[2],
@@ -66,8 +70,9 @@ namespace main(%N);
         ramVal[4],
         ramVal[5],
         ramVal[6],
-        ramVal[7],
-    }
+        ramVal[7]
+    };
+
     {
         pC, 
         Arith.c[0] + 2**16* Arith.c[1] + 2**32 * Arith.c[2],
@@ -87,8 +92,9 @@ namespace main(%N);
         ramVal[4],
         ramVal[5],
         ramVal[6],
-        ramVal[7],
-    }
+        ramVal[7]
+    };
+
     {
         pD, 
         Arith.d[0] + 2**16* Arith.d[1] + 2**32 * Arith.d[2],
@@ -108,8 +114,8 @@ namespace main(%N);
         ramVal[4],
         ramVal[5],
         ramVal[6],
-        ramVal[7],
-    }
+        ramVal[7]
+    };
 
     // p points are in GL
     // and q points are in g2
@@ -133,7 +139,7 @@ namespace main(%N);
 
     public q1x1_0 = ramVal[0](2);
     public q1x1_1 = ramVal[1](2);
-    public a1x1_2 = ramVal[2](2);
+    public q1x1_2 = ramVal[2](2);
     public q1x1_3 = ramVal[3](2);
     public q1x1_4 = ramVal[4](2);
     public q1x1_5 = ramVal[5](2);
@@ -142,7 +148,7 @@ namespace main(%N);
 
     public q1x2_0 = ramVal[0](3);
     public q1x2_1 = ramVal[1](3);
-    public a1x2_2 = ramVal[2](3);
+    public q1x2_2 = ramVal[2](3);
     public q1x2_3 = ramVal[3](3);
     public q1x2_4 = ramVal[4](3);
     public q1x2_5 = ramVal[5](3);
@@ -151,7 +157,7 @@ namespace main(%N);
 
     public q1y1_0 = ramVal[0](4);
     public q1y1_1 = ramVal[1](4);
-    public a1y1_2 = ramVal[2](4);
+    public q1y1_2 = ramVal[2](4);
     public q1y1_3 = ramVal[3](4);
     public q1y1_4 = ramVal[4](4);
     public q1y1_5 = ramVal[5](4);
@@ -160,7 +166,7 @@ namespace main(%N);
 
     public q1y2_0 = ramVal[0](5);
     public q1y2_1 = ramVal[1](5);
-    public a1y2_2 = ramVal[2](5);
+    public q1y2_2 = ramVal[2](5);
     public q1y2_3 = ramVal[3](5);
     public q1y2_4 = ramVal[4](5);
     public q1y2_5 = ramVal[5](5);
