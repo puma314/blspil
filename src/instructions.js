@@ -22,11 +22,11 @@ class FOps {
       return t;
   }
 
-  is_zero(a) {
-    return a % this.field_modulus == 0;
+  isZero(a) {
+    return (a % this.field_modulus == 0) ? 1n : 0n;
   }
 
-  assert_equal(a, b) {
+  assertEqual(a, b) {
     if (a != b) {
       throw new Error("Assertion failed");
     }

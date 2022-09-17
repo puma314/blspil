@@ -45,6 +45,7 @@ class F1 {
     this.I = I;
     this.one = this.I.constant(1);
     this.zero = this.I.constant(0);
+    this.FBase = this;
   }
 
   add(a, b) {
@@ -79,9 +80,26 @@ class F1 {
     return this.mul(a, this.inv(b));
   }
 
-  eq(a, b) {
-    this.I.assert_equal(a, b);
+  assertEqual(a, b) {
+    this.I.assertEqual(a, b);
   }
+
+  constant(a) {
+    return this.I.constant(a);
+  }
+
+  cmov(c, a, b) {
+    return this.I.cmov(c, a, b);
+  }
+
+  isZero(a) {
+    return this.I.isZero(a);
+  }
+
+  eq(a, b) {
+    return this.isZero(this.sub(a,b));
+  }
+
 }
 
 class F2 {
@@ -91,6 +109,7 @@ class F2 {
     }
     this.degree = F.degree*2
     this.F = F;
+    this.FBase = F.FBase;
     this.one = [
       this.F.one,
       this.F.zero
@@ -99,7 +118,6 @@ class F2 {
       this.F.zero,
       this.F.zero
     ];
-
   }
 
   add(a, b) {
@@ -149,7 +167,36 @@ class F2 {
     return this.mul(a, this.inv(b));
   }
 
-  eq(a, b) {}
+  assertEqual(a, b) {
+    this.F.assertEqual(a[0], b[0]);
+    this.F.assertEqual(a[1], b[1]);
+  }
+
+  constant(a) {
+    return [
+      this.F.constant(a[0]),
+      this.F.constant(a[1])
+    ];
+  }
+
+  cmov(c, a, b) {
+    return [
+      this.F.cmov(c, a[0], b[0]),
+      this.F.cmov(c, a[1], b[1])
+    ];
+  }
+
+  isZero(a) {
+    return this.FBase.mul(
+      this.F.isZero(a[0]),
+      this.F.isZero(a[1])
+    );
+  }
+
+  eq(a, b) {
+    return this.isZero(this.sub(a,b));
+  }
+
 }
 
 class F3 {
@@ -159,6 +206,7 @@ class F3 {
     }
     this.degree = F.degree*3;
     this.F = F;
+    this.FBase = F.FBase;
     this.one = [
       this.F.one,
       this.F.zero,
@@ -263,10 +311,41 @@ class F3 {
     return this.mul(a, this.inv(b));
   }
 
+  assertEqual(a, b) {
+    this.F.assertEqual(a[0], b[0]);
+    this.F.assertEqual(a[1], b[1]);
+    this.F.assertEqual(a[2], b[2]);
+  }
+
+
+  constant(a) {
+    return [
+      this.F.constant(a[0]),
+      this.F.constant(a[1]),
+      this.F.constant(a[2])
+    ];
+  }
+
+  cmov(c, a, b) {
+    return [
+      this.F.cmov(c, a[0], b[0]),
+      this.F.cmov(c, a[1], b[1]),
+      this.F.cmov(c, a[2], b[2])
+    ];
+  }
+
+  isZero(a) {
+    return this.FBase.mul(
+      this.FBase.mul(
+        this.F.isZero(a[0]),
+        this.F.isZero(a[1])
+      ),
+      this.F.isZero(a[2])
+    );
+  }
+
   eq(a, b) {
-    this.F.eq(a[0], b[0]);
-    this.F.eq(a[1], b[1]);
-    this.F.eq(a[2], b[2]);
+    return this.isZero(this.sub(a,b));
   }
 }
 

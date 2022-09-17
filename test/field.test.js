@@ -17,28 +17,28 @@ describe("BLS Field", function () {
         const b = 4n;
         const c  = engine.F1.add(a, b);
         assert(c == 7n);
-        engine.F1.eq(c, 7n);
+        engine.F1.assertEqual(c, 7n);
     });
     it("should sub in F1", async function () {
         const a = 4n;
         const b = 3n;
         const c  = engine.F1.sub(a, b);
         assert(c == 1n);
-        engine.F1.eq(c, 1n);
+        engine.F1.assertEqual(c, 1n);
     });
     it("should neg in F1", async function () {
         const a = 3n;
         const c  = engine.F1.neg(a);
         const cExp = instructions.field_modulus - 3n;
         assert(c == cExp);
-        engine.F1.eq(c, cExp);
+        engine.F1.assertEqual(c, cExp);
     });
     it("should mul in F1", async function () {
         const a = 3n;
         const b = 4n;
         const c  = engine.F1.mul(a, b);
         assert(c == 12n);
-        engine.F1.eq(c, 12n);
+        engine.F1.assertEqual(c, 12n);
     });
     it("should exp in F1", async function () {
         const a = 3n;
@@ -46,14 +46,14 @@ describe("BLS Field", function () {
         const c  = engine.F1.exp(a, b);
         const cExp = (a**b)%instructions.field_modulus;
         assert(c == cExp);
-        engine.F1.eq(c, cExp);
+        engine.F1.assertEqual(c, cExp);
     });
     it("should square in F1", async function () {
         const a = 3n;
         const c  = engine.F1.square(a);
         const cExp = (a*a) % instructions.field_modulus;
         assert(c == cExp);
-        engine.F1.eq(c, cExp);
+        engine.F1.assertEqual(c, cExp);
     });
     it("should inv in F1", async function () {
         const a = 3n;
@@ -61,7 +61,7 @@ describe("BLS Field", function () {
         const c2 = engine.F1.mul(a,c);
         const c2Exp = 1n;
         assert(c2 == c2Exp);
-        engine.F1.eq(c2, c2Exp);
+        engine.F1.assertEqual(c2, c2Exp);
     });
     it("should div in F1", async function () {
         const a = 8n;
@@ -69,8 +69,36 @@ describe("BLS Field", function () {
         const c  = engine.F1.div(a, b);
         const cExp = 2n;
         assert(c == cExp);
-        engine.F1.eq(c, cExp);
+        engine.F1.assertEqual(c, cExp);
     });
+    it("should isZero in F1", async function () {
+        const c1  = engine.F1.isZero(engine.F1.zero);
+        const c1Exp = 1n;
+        assert(c1 == c1Exp);
+        engine.F1.assertEqual(c1, c1Exp);
+
+        const c2  = engine.F1.isZero(engine.F1.one);
+        const c2Exp = 0n;
+        assert(c2 == c2Exp);
+        engine.F1.assertEqual(c2, c2Exp);
+    });
+    it("should cmov in F1", async function () {
+        const a = 8n;
+        const b = 4n;
+        const c1  = engine.F1.cmov(1n, a, b);
+        engine.F1.assertEqual(c1, a);
+        const c2  = engine.F1.cmov(0n, a, b);
+        engine.F1.assertEqual(c2, b);
+    });
+    it("should eq in F1", async function () {
+        const a = 8n;
+        const b = 4n;
+        const c1  = engine.F1.eq(a, b);
+        engine.F1.assertEqual(c1, 0n);
+        const c2  = engine.F1.eq(a, a);
+        engine.F1.assertEqual(c2, 1n);
+    });
+
     it("should add in F2", async function () {
         const a = [4n, 5n];
         const b = [2n, 3n];
@@ -79,7 +107,7 @@ describe("BLS Field", function () {
         for (let i=0; i<2; i++) {
             assert(c[i] == cExp[i]);
         }
-        engine.F2.eq(c, cExp);
+        engine.F2.assertEqual(c, cExp);
     });
     it("should sub in F2", async function () {
         const a = [4n, 5n];
@@ -89,7 +117,7 @@ describe("BLS Field", function () {
         for (let i=0; i<2; i++) {
             assert(c[i] == cExp[i]);
         }
-        engine.F2.eq(c, cExp);
+        engine.F2.assertEqual(c, cExp);
     });
     it("should neg in F2", async function () {
         const a = [4n, 5n];
@@ -101,7 +129,7 @@ describe("BLS Field", function () {
         for (let i=0; i<2; i++) {
             assert(c[i] == cExp[i]);
         }
-        engine.F2.eq(c, cExp);
+        engine.F2.assertEqual(c, cExp);
     });
     it("should mul in F2", async function () {
         const a = [4n, 5n];
@@ -114,7 +142,7 @@ describe("BLS Field", function () {
         for (let i=0; i<2; i++) {
             assert(c[i] == cExp[i]);
         }
-        engine.F2.eq(c, cExp);
+        engine.F2.assertEqual(c, cExp);
     });
     it("should exp in F2", async function () {
         const a = [4n, 5n];
@@ -127,7 +155,7 @@ describe("BLS Field", function () {
         for (let i=0; i<2; i++) {
             assert(c[i] == cExp[i]);
         }
-        engine.F2.eq(c, cExp);
+        engine.F2.assertEqual(c, cExp);
     });
     it("should square in F2", async function () {
         const a = [4n, 5n];
@@ -139,7 +167,7 @@ describe("BLS Field", function () {
         for (let i=0; i<2; i++) {
             assert(c[i] == cExp[i]);
         }
-        engine.F2.eq(c, cExp);
+        engine.F2.assertEqual(c, cExp);
     });
     it("should inv in F2", async function () {
         const a = [4n, 5n];
@@ -149,7 +177,7 @@ describe("BLS Field", function () {
         for (let i=0; i<2; i++) {
             assert(c2[i] == c2Exp[i]);
         }
-        engine.F2.eq(c2, c2Exp);
+        engine.F2.assertEqual(c2, c2Exp);
     });
     it("should div in F2", async function () {
         const a = [4n, 5n];
@@ -159,8 +187,36 @@ describe("BLS Field", function () {
         for (let i=0; i<2; i++) {
             assert(d[i] == b[i]);
         }
-        engine.F2.eq(d, b);
+        engine.F2.assertEqual(d, b);
     });
+    it("should isZero in F2", async function () {
+        const c1  = engine.F2.isZero(engine.F2.zero);
+        const c1Exp = 1n;
+        assert(c1 == c1Exp);
+        engine.F1.assertEqual(c1, c1Exp);
+
+        const c2  = engine.F2.isZero(engine.F2.one);
+        const c2Exp = 0n;
+        assert(c2 == c2Exp);
+        engine.F1.assertEqual(c2, c2Exp);
+    });
+    it("should cmov in F2", async function () {
+        const a = [4n, 5n];
+        const b = [2n, 3n];
+        const c1  = engine.F2.cmov(1n, a, b);
+        engine.F2.assertEqual(c1, a);
+        const c2  = engine.F2.cmov(0n, a, b);
+        engine.F2.assertEqual(c2, b);
+    });
+    it("should eq in F2", async function () {
+        const a = [4n, 5n];
+        const b = [2n, 3n];
+        const c1  = engine.F2.eq(a, b);
+        engine.F1.assertEqual(c1, 0n);
+        const c2  = engine.F2.eq(a, a);
+        engine.F1.assertEqual(c2, 1n);
+    });
+
     it("should add in F6", async function () {
         const a = [[4n, 5n], [6n, 7n], [8n, 9n]];
         const b = [[2n, 3n], [4n, 5n], [6n, 7n]];
@@ -171,7 +227,7 @@ describe("BLS Field", function () {
                 assert(c[i][j] == cExp[i][j]);
             }
         }
-        engine.F6.eq(c, cExp);
+        engine.F6.assertEqual(c, cExp);
     });
     it("should sub in F6", async function () {
         const a = [[4n, 5n], [6n, 7n], [8n, 9n]];
@@ -183,7 +239,7 @@ describe("BLS Field", function () {
                 assert(c[i][j] == cExp[i][j]);
             }
         }
-        engine.F6.eq(c, cExp);
+        engine.F6.assertEqual(c, cExp);
     });
     it("should neg in F6", async function () {
         const a = [[4n, 5n], [6n, 7n], [8n, 9n]];
@@ -207,7 +263,7 @@ describe("BLS Field", function () {
                 assert(c[i][j] == cExp[i][j]);
             }
         }
-        engine.F6.eq(c, cExp);
+        engine.F6.assertEqual(c, cExp);
     });
     it("should mul in F6", async function () {
         const a = [[4n, 5n], [6n, 7n], [8n, 9n]];
@@ -232,7 +288,7 @@ describe("BLS Field", function () {
                 assert(c[i][j] == cExp[i][j]);
             }
         }
-        engine.F6.eq(c, cExp);
+        engine.F6.assertEqual(c, cExp);
     });
     it("should exp in F6", async function () {
         const a = [[4n, 5n], [6n, 7n], [8n, 9n]];
@@ -247,7 +303,7 @@ describe("BLS Field", function () {
                 assert(c[i][j] == cExp[i][j]);
             }
         }
-        engine.F6.eq(c, cExp);
+        engine.F6.assertEqual(c, cExp);
     });
     it("should square in F6", async function () {
         const a = [[4n, 5n], [6n, 7n], [8n, 9n]];
@@ -258,7 +314,7 @@ describe("BLS Field", function () {
                 assert(c[i][j] == cExp[i][j]);
             }
         }
-        engine.F6.eq(c, cExp);
+        engine.F6.assertEqual(c, cExp);
     });
     it("should inv in F6", async function () {
         const a = [[4n, 5n], [6n, 7n], [8n, 9n]];
@@ -270,7 +326,7 @@ describe("BLS Field", function () {
                 assert(c2[i][j] == c2Exp[i][j]);
             }
         }
-        engine.F6.eq(c2, c2Exp);
+        engine.F6.assertEqual(c2, c2Exp);
     });
     it("should div in F6", async function () {
         const a = [[4n, 5n], [6n, 7n], [8n, 9n]];
@@ -282,8 +338,36 @@ describe("BLS Field", function () {
                 assert(d[i][j] == b[i][j]);
             }
         }
-        engine.F6.eq(d, b);
+        engine.F6.assertEqual(d, b);
     });
+    it("should isZero in F6", async function () {
+        const c1  = engine.F6.isZero(engine.F6.zero);
+        const c1Exp = 1n;
+        assert(c1 == c1Exp);
+        engine.F1.assertEqual(c1, c1Exp);
+
+        const c2  = engine.F6.isZero(engine.F6.one);
+        const c2Exp = 0n;
+        assert(c2 == c2Exp);
+        engine.F1.assertEqual(c2, c2Exp);
+    });
+    it("should cmov in F6", async function () {
+        const a = [[4n, 5n], [6n, 7n], [8n, 9n]];
+        const b = [[2n, 3n], [4n, 5n], [6n, 7n]];
+        const c1  = engine.F6.cmov(1n, a, b);
+        engine.F6.assertEqual(c1, a);
+        const c2  = engine.F6.cmov(0n, a, b);
+        engine.F6.assertEqual(c2, b);
+    });
+    it("should eq in F6", async function () {
+        const a = [[4n, 5n], [6n, 7n], [8n, 9n]];
+        const b = [[2n, 3n], [4n, 5n], [6n, 7n]];
+        const c1  = engine.F6.eq(a, b);
+        engine.F1.assertEqual(c1, 0n);
+        const c2  = engine.F6.eq(a, a);
+        engine.F1.assertEqual(c2, 1n);
+    });
+
     it("should add in F12", async function () {
         const a = [[[4n, 5n], [6n, 7n], [8n, 9n]], [[10n, 11n], [12n, 13n], [14n, 15n]]];
         const b = [[[2n, 3n], [4n, 5n], [6n, 7n]], [[8n, 9n], [10n, 11n], [12n, 13n]]];
@@ -296,7 +380,7 @@ describe("BLS Field", function () {
                 }
             }
         }
-        engine.F12.eq(c, cExp);
+        engine.F12.assertEqual(c, cExp);
     });
     it("should sub in F12", async function () {
         const a = [[[4n, 5n], [6n, 7n], [8n, 9n]], [[10n, 11n], [12n, 13n], [14n, 15n]]];
@@ -310,7 +394,7 @@ describe("BLS Field", function () {
                 }
             }
         }
-        engine.F12.eq(c, cExp);
+        engine.F12.assertEqual(c, cExp);
     });
     it("should neg in F12", async function () {
         const a = [[[4n, 5n], [6n, 7n], [8n, 9n]], [[10n, 11n], [12n, 13n], [14n, 15n]]];
@@ -352,7 +436,7 @@ describe("BLS Field", function () {
                 }
             }
         }
-        engine.F12.eq(c, cExp);
+        engine.F12.assertEqual(c, cExp);
     });
     it("should mul in F12", async function () {
         const a = [[[4n, 5n], [6n, 7n], [8n, 9n]], [[10n, 11n], [12n, 13n], [14n, 15n]]];
@@ -395,7 +479,7 @@ describe("BLS Field", function () {
                 }
             }
         }
-        engine.F12.eq(c, cExp);
+        engine.F12.assertEqual(c, cExp);
     });
     it("should mul in F12 2", async function () {
         const a = [[[0n, 0n], [0n, 0n], [0n, 1n]], [[1n, 0n], [0n, 0n], [0n, 0n]]];
@@ -438,7 +522,7 @@ describe("BLS Field", function () {
                 }
             }
         }
-        engine.F12.eq(c, cExp);
+        engine.F12.assertEqual(c, cExp);
     });
     it("should exp in F12", async function () {
         const a = [[[4n, 5n], [6n, 7n], [8n, 9n]], [[10n, 11n], [12n, 13n], [14n, 15n]]];
@@ -455,7 +539,7 @@ describe("BLS Field", function () {
                 }
             }
         }
-        engine.F12.eq(c, cExp);
+        engine.F12.assertEqual(c, cExp);
     });
     it("should square in F12", async function () {
         const a = [[[4n, 5n], [6n, 7n], [8n, 9n]], [[10n, 11n], [12n, 13n], [14n, 15n]]];
@@ -468,7 +552,7 @@ describe("BLS Field", function () {
                 }
             }
         }
-        engine.F12.eq(c, cExp);
+        engine.F12.assertEqual(c, cExp);
     });
     it("should inv in F12", async function () {
         const a = [[[4n, 5n], [6n, 7n], [8n, 9n]], [[10n, 11n], [12n, 13n], [14n, 15n]]];
@@ -482,7 +566,7 @@ describe("BLS Field", function () {
                 }
             }
         }
-        engine.F12.eq(c2, c2Exp);
+        engine.F12.assertEqual(c2, c2Exp);
     });
     it("should div in F12", async function () {
         const a = [[[4n, 5n], [6n, 7n], [8n, 9n]], [[10n, 11n], [12n, 13n], [14n, 15n]]];
@@ -496,6 +580,34 @@ describe("BLS Field", function () {
                 }
             }
         }
-        engine.F12.eq(d, b);
+        engine.F12.assertEqual(d, b);
     });
+    it("should isZero in F12", async function () {
+        const c1  = engine.F12.isZero(engine.F12.zero);
+        const c1Exp = 1n;
+        assert(c1 == c1Exp);
+        engine.F1.assertEqual(c1, c1Exp);
+
+        const c2  = engine.F12.isZero(engine.F12.one);
+        const c2Exp = 0n;
+        assert(c2 == c2Exp);
+        engine.F1.assertEqual(c2, c2Exp);
+    });
+    it("should cmov in F12", async function () {
+        const a = [[[4n, 5n], [6n, 7n], [8n, 9n]], [[10n, 11n], [12n, 13n], [14n, 15n]]];
+        const b = [[[2n, 3n], [4n, 5n], [6n, 7n]], [[8n, 9n], [10n, 11n], [12n, 13n]]];
+        const c1  = engine.F12.cmov(1n, a, b);
+        engine.F12.assertEqual(c1, a);
+        const c2  = engine.F12.cmov(0n, a, b);
+        engine.F12.assertEqual(c2, b);
+    });
+    it("should eq in F12", async function () {
+        const a = [[[4n, 5n], [6n, 7n], [8n, 9n]], [[10n, 11n], [12n, 13n], [14n, 15n]]];
+        const b = [[[2n, 3n], [4n, 5n], [6n, 7n]], [[8n, 9n], [10n, 11n], [12n, 13n]]];
+        const c1  = engine.F12.eq(a, b);
+        engine.F1.assertEqual(c1, 0n);
+        const c2  = engine.F12.eq(a, a);
+        engine.F1.assertEqual(c2, 1n);
+    });
+
 });
