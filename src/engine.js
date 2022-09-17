@@ -3,6 +3,7 @@ const F2 = require("./fields").F2;
 const F3 = require("./fields").F3;
 const Curve = require("./curve");
 const assert = require("chai").assert;
+const { bits } = require("./utils");
 
 const log_ate_loop_count = 62;
 
@@ -33,13 +34,11 @@ class Engine {
       return [this.F.mulByNonResidue(a[2]), a[0], a[1]];
     });
     this.F12 = new F2(this.F6);
-    this.G1 = new Curve(instructions, this.F1, 4n);
-    this.G2 = new Curve(instructions, this.F2, [4n, 4n]);
-    this.G1.g = [
+    const g1 = [
       3685416753713387016781088315183077757961620795782546409894578378688607592378376318836054947676345821548104185464507n,
       1339506544944476473020471379941921221584933875938349620426543736416511423956333506472724655353366534992391756441569n,
     ];
-    this.G2.g = [
+    const g2 = [
       [
         352701069587466618187139116011060144890029952792775240219908644239793785735715026873347600343865175952761926303160n,
         3059144344244213709971259814753781636986470325476647558659373206291635324768958432433509563104347017837885763365758n,
@@ -49,6 +48,9 @@ class Engine {
         927553665492332455747201965776037880757740193453592970025027978793976877002675564980949289727957565575433344219582n,
       ],
     ];
+
+    this.G1 = new Curve(this.F1, 4n, g1);
+    this.G2 = new Curve(this.F2, [4n, 4n], g2);
   }
 
   line_func(p1, p2, t) {
@@ -386,7 +388,7 @@ class Engine {
     let tmp3 =
       F2.sub(
         F2.sub(
-          F2.square(F2.add(tmp1 , r.x)),
+          F2.square(F2.add(tmp1 , r[0])),
           tmp0
         ),
         tmp2
@@ -428,7 +430,7 @@ class Engine {
   additionStep(r, q) {
     const F2 = this.F2;
 
-    const zsquared = F2.square(r[2]);
+    let zsquared = F2.square(r[2]);
     const ysquared = F2.square(q[1]);
 
     let t0 = F2.mul(zsquared, q[0]);
@@ -480,16 +482,9 @@ class Engine {
     const n = bits(exp);
 
     let res = [
-      [
-        [base[0][0][0], base[0][0][1]],
-        [base[0][1][0], base[0][1][1]],
-        [base[0][2][0], base[0][2][1]],
-      ],
-      [
-        [base[1][0][0], base[1][0][1]],
-        [base[1][1][0], base[1][1][1]],
-        [base[1][2][0], base[1][2][1]],
-      ]
+        [base[0][0], base[0][1]],
+        [base[1][0], base[1][1]],
+        [base[2][0], base[2][1]],
     ];
 
     for (let i = n.length - 2; i >= 0; i--) {
@@ -512,17 +507,17 @@ class Engine {
     let ci = 1;
 
     for (let i = n.length - 2; i > 0; i--) {
-      f = this.ell(p, coefs[ci], f);
+      f = this.ell(p, qPrep[ci], f);
       ci++;
 
       if (n[i]) {
-        f = this.ell(p, coefs[ci], f);
+        f = this.ell(p, qPrep[ci], f);
         ci++;
       }
 
       f = this.F12.square(f);
     }
-    f = this.ell(p, coefs[ci], f);
+    f = this.ell(p, qPrep[ci], f);
     ci++;
 
     assert(ci = qPrep.length);

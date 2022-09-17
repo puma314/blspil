@@ -1,18 +1,6 @@
 const { assert } = require("chai");
 
-function bits(s) {
-  let E = BigInt(s);
-  const res = [];
-  while (E) {
-    if (E & BigInt(1)) {
-      res.push(1);
-    } else {
-      res.push(0);
-    }
-    E = E >> BigInt(1);
-  }
-  return res;
-}
+const { bits } = require("./utils");
 
 function exp(F, base, s) {
   if (s == 0n) return F.one;

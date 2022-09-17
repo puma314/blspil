@@ -5,6 +5,7 @@ const path = require("path");
 const assert = require("chai").assert;
 
 describe("BLS", function () {
+  this.timeout(10000000);
   /*
   it("compute pairing", async function () {
     const g1 = [
