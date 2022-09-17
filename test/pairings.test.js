@@ -60,4 +60,12 @@ describe("BLS", function () {
     engine.F12.assertEqual(P, Q);
     engine.F12.assertEqual(Q, R);
   });
+  it("should test pairing equation", async function() {
+    const engine = new Engine(instructions);
+    const g1 = engine.G1.g;
+    const g2 = engine.G2.g;
+    const ng1 = engine.G1.neg(g1);
+
+    engine.pairingEquationCheck(g1, g2, ng1, g2);
+  });
 });
