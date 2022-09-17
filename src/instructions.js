@@ -46,7 +46,6 @@ class FOps {
     Conditional mov.
   */
   cmov(c, a, b) {
-    console.log("c", c);
     if (c != 0n) {
       return a;
     } else {

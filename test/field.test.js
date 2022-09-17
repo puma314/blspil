@@ -93,9 +93,9 @@ describe("BLS Field", function () {
     it("should eq in F1", async function () {
         const a = 8n;
         const b = 4n;
-        const c1  = engine.F1.eq(a, b);
+        const c1  = engine.F1.isEq(a, b);
         engine.F1.assertEqual(c1, 0n);
-        const c2  = engine.F1.eq(a, a);
+        const c2  = engine.F1.isEq(a, a);
         engine.F1.assertEqual(c2, 1n);
     });
 
@@ -211,9 +211,9 @@ describe("BLS Field", function () {
     it("should eq in F2", async function () {
         const a = [4n, 5n];
         const b = [2n, 3n];
-        const c1  = engine.F2.eq(a, b);
+        const c1  = engine.F2.isEq(a, b);
         engine.F1.assertEqual(c1, 0n);
-        const c2  = engine.F2.eq(a, a);
+        const c2  = engine.F2.isEq(a, a);
         engine.F1.assertEqual(c2, 1n);
     });
 
@@ -362,9 +362,9 @@ describe("BLS Field", function () {
     it("should eq in F6", async function () {
         const a = [[4n, 5n], [6n, 7n], [8n, 9n]];
         const b = [[2n, 3n], [4n, 5n], [6n, 7n]];
-        const c1  = engine.F6.eq(a, b);
+        const c1  = engine.F6.isEq(a, b);
         engine.F1.assertEqual(c1, 0n);
-        const c2  = engine.F6.eq(a, a);
+        const c2  = engine.F6.isEq(a, a);
         engine.F1.assertEqual(c2, 1n);
     });
 
@@ -604,9 +604,9 @@ describe("BLS Field", function () {
     it("should eq in F12", async function () {
         const a = [[[4n, 5n], [6n, 7n], [8n, 9n]], [[10n, 11n], [12n, 13n], [14n, 15n]]];
         const b = [[[2n, 3n], [4n, 5n], [6n, 7n]], [[8n, 9n], [10n, 11n], [12n, 13n]]];
-        const c1  = engine.F12.eq(a, b);
+        const c1  = engine.F12.isEq(a, b);
         engine.F1.assertEqual(c1, 0n);
-        const c2  = engine.F12.eq(a, a);
+        const c2  = engine.F12.isEq(a, a);
         engine.F1.assertEqual(c2, 1n);
     });
 
