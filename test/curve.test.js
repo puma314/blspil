@@ -60,6 +60,26 @@ describe("curve", function () {
     ];
     assert_g1_equal(result, expected);
   });
+  it("sub g1", async function() {
+    const engine = new Engine(instructions);
+    const a = [
+      838589206289216005799424730305866328161735431124665289961769162861615689790485775997575391185127590486775437397838n,
+      3450209970729243429733164009999191867485184320918914219895632678707687208996709678363578245114137957452475385814312n,
+    ];
+    const result = engine.G1.sub(a, g1);
+    assert_g1_equal(result, g1);
+  });
+  it("g1 - g1 = inf", async function() {
+    const engine = new Engine(instructions);
+    const result = engine.G1.sub(g1, g1);
+    assert(engine.G1.isInf(result));
+  });
+
+  it("g2 - g2 = inf", async function() {
+    const engine = new Engine(instructions);
+    const result = engine.G2.sub(g2, g2);
+    assert(engine.G2.isInf(result));
+  });
 
   it("double g2", async function () {
     const engine = new Engine(instructions);
@@ -125,6 +145,11 @@ describe("curve", function () {
       ],
     ];
     assert_g2_equal(result, expected);
+  });
+  it("g*n equals 0", async function () {
+    const engine = new Engine(instructions);
+    const result = engine.G1.scalarMul(engine.G1.g, engine.G1.order);
+    assert(engine.G1.isInf(result));
   });
   it("twist", async function () {
     const engine = new Engine(instructions);

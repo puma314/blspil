@@ -4,28 +4,35 @@ const F2 = require("./fields").F2;
 const assert = require("assert");
 
 class Curve {
-  constructor(instructions, F, b) {
-    this.I = instructions;
+  constructor(F, b, g) {
     this.F = F; // The underlying base field of curve points
+    this.FBase = F.FBase;
     this.b = b; // Curve is defined by y^2 = x^3 + b
+    this.g = g;
+    this.inf = [this.F.zero, this.F.zero];
+    this.order = 0x73eda753299d7d483339d80809a1d80553bda402fffe5bfeffffffff00000001n;
     // b lives in F
   }
 
-  inf() {
-    return this.F.zero;
-  }
 
-  is_inf(p) {
-    const mul = this.I.mul(
-      this.F.is_eq(p[0], this.F.zero), // 1 if x is zero, 0 otherwise
-      this.F.is_eq(p[1], this.F.zero) // 1 if y is zero, 0 otherwise
+  isInf(p) {
+    const mul = this.FBase.mul(
+      this.F.isEq(p[0], this.F.zero), // 1 if x is zero, 0 otherwise
+      this.F.isEq(p[1], this.F.zero) // 1 if y is zero, 0 otherwise
     );
     return mul;
   }
 
-  is_on_curve(p) {
+  cmov(c, a, b) {
+    return [
+      this.F.cmov(c, a[0], b[0]),
+      this.F.cmov(c, a[1], b[1])
+    ];
+  }
+
+  isOnCurve(p) {
     // TODO refactor this using cmove
-    const is_inf = this.is_inf(p);
+    const isInf = this.isInf(p);
 
     const if_inf = this.I.constant(1);
 
@@ -33,103 +40,119 @@ class Curve {
     const y_squared = this.F.square(p_y);
     const x_cubed = this.F.mul(this.F.square(p_x), p_x);
     const rhs = this.F.add(x_cubed, this.b);
-    const res = this.F.is_eq(y_squared, rhs);
+    const res = this.F.isEq(y_squared, rhs);
 
-    return this.I.cmov(is_inf, if_inf, res);
+    return this.FBase.cmov(isInf, if_inf, res);
   }
 
   double(p) {
-    const is_inf = this.is_inf(p);
-    const if_inf = p;
-
-    const [p_x, p_y] = p;
-    const x_squared = this.F.square(p_x);
-    const three_x_squared = this.F.scalar_mul(x_squared, this.I.constant(3n));
-    const two_y = this.F.scalar_mul(p_y, this.I.constant(2n));
-    const m = this.F.div(three_x_squared, two_y);
-    const m_squared = this.F.square(m);
-    const neg_two_x = this.F.neg(this.F.scalar_mul(p_x, this.I.constant(2n)));
-    const newx = this.F.add(m_squared, neg_two_x);
-    const neg_m = this.F.neg(m);
-    const newy_term1 = this.F.mul(neg_m, newx);
-    const newy_term2 = this.F.mul(m, p_x);
-    const newy_term3 = this.F.neg(p_y);
-    const newy_pt1 = this.F.add(newy_term1, newy_term2);
-    const newy = this.F.add(newy_pt1, newy_term3);
-    const res = [newx, newy];
-
-    return [
-      this.I.cmov(is_inf, if_inf[0], res[0]),
-      this.I.cmov(is_inf, if_inf[1], res[1]),
-    ];
+    return this.add(p, p);
   }
 
   add(p, q) {
     // TODO refactor this using cmove
-    if (this.is_inf(p)) {
-      return q;
-    }
-    if (this.is_inf(q)) {
-      return p;
-    }
-    const [p_x, p_y] = p;
-    const [q_x, q_y] = q;
-    if (this.F.is_eq(p_x, q_x)) {
-      if (this.F.is_eq(p_y, q_y)) {
-        return this.double(p);
-      } else {
-        return this.inf();
-      }
-    }
-    const neg_p_y = this.F.neg(p_y);
-    const neg_p_x = this.F.neg(p_x);
-    const m_num = this.F.add(q_y, neg_p_y);
-    const m_den = this.F.add(q_x, neg_p_x);
-    const m = this.F.div(m_num, m_den);
 
-    const neg_q_x = this.F.neg(q_x);
-    const m_squared = this.F.square(m);
-    const newx_term1 = this.F.add(m_squared, neg_q_x);
-    const newx = this.F.add(newx_term1, neg_p_x);
+    const isInfP = this.isInf(p);
+    const p1 = this.cmov(isInfP, this.g, p);
+    const isInfQ = this.isInf(q);
+    const q1 = this.cmov(isInfQ, this.g, q);
 
-    const neg_m = this.F.neg(m);
-    const newy_term1 = this.F.mul(neg_m, newx);
-    const newy_term2 = this.F.mul(m, p_x);
-    const newy_term3 = this.F.neg(p_y);
-    const newy_pt1 = this.F.add(newy_term1, newy_term2);
-    const newy = this.F.add(newy_pt1, newy_term3);
 
-    const neg_m_neqx = this.F.mul(neg_m, newx);
-    const mul_m_qx = this.F.mul(m, q_x);
-    const neg_q_y = this.F.neg(q_y);
-    const newy_rhs_pt1 = this.F.add(neg_m_neqx, mul_m_qx);
-    const newy_rhs = this.F.add(newy_rhs_pt1, neg_q_y);
+    const sameX = this.F.isEq(p1[0], q1[0]);
 
-    this.F.eq(newy, newy_rhs); // Will assert they are equal
+    const q2 = [this.F.cmov(sameX, this.F.add(q1[0], this.F.one), q1[0]), q1[1]];
 
-    return [newx, newy];
+    const sDif = this.F.div(
+      this.F.sub(p1[1], q2[1]),
+      this.F.sub(p1[0], q2[0]),
+    )
+
+    const xp2 = this.F.square(p1[0]);
+    const xp2_3 = this.F.add(this.F.add(xp2, xp2), xp2);
+    const sEq = this.F.div(xp2_3, this.F.add(p1[1], p1[1]));
+
+    const s = this.F.cmov(sameX, sEq, sDif);
+
+    const xr = this.F.sub(this.F.sub(this.F.square(s), p1[0]), q1[0]);
+    const yr = this.F.sub(this.F.mul(s, this.F.sub(p1[0], xr)), p1[1]);
+
+    const sameY = this.F.isEq(p1[1], q1[1]);
+    const opose = this.FBase.mul( sameX, this.FBase.sub(this.FBase.one, sameY) );
+
+
+    const r1 = this.cmov(opose, this.inf, [xr, yr]);
+    const r2 = this.cmov(isInfP, q, r1);
+    const r3 = this.cmov(isInfQ, p, r2);
+
+    return r3
   }
 
-  scalar_mul(p, s) {
+
+  
+  scalarMul(base, s) {
     // Witness a binary representation of s
     // Constraint the binary representation
     // Compute a running sum given the binary representation
     // p ** s
+
+    let res;
+
+    if (s == 0n) return this.zero;
+
+    const n = naf(s);
+
+    if (n[n.length-1] == 1) {
+        res = base;
+    } else if (n[n.length-1] == -1) {
+        res = this.neg(base);
+    } else {
+        throw new Error("invlaud NAF");
+    }
+
+    for (let i=n.length-2; i>=0; i--) {
+
+        res = this.double(res);
+
+        if (n[i] == 1) {
+            res = this.add(res, base);
+        } else if (n[i] == -1) {
+            res = this.sub(res, base);
+        }
+    }
+
+    return res;
+
+    function naf(n) {
+      let E = BigInt(n);
+      const res = [];
+      while (E) {
+          if (E & BigInt(1)) {
+              const z = 2 - Number(E % BigInt(4));
+              res.push( z );
+              E = E - BigInt(z);
+          } else {
+              res.push( 0 );
+          }
+          E = E >> BigInt(1);
+      }
+      return res;
+    }
   }
 
+
   neg(p) {
-    // TODO refactor using cmove
-    if (this.is_inf(p)) {
-      return p;
-    }
     const [p_x, p_y] = p;
     return [p_x, this.F.neg(p_y)];
   }
 
-  eq(p, q) {
+  sub(p, q) {
+    return this.add(p, this.neg(q));
+  }
+
+  isEq(p, q) {
     const [p_x, p_y] = p;
     const [q_x, q_y] = q;
-    return this.F.mul(this.F.is_eq(p_x, q_x), this.F.eq(p_y, q_y));
+    return this.FBase.mul(this.F.isEq(p_x, q_x), this.F.isEq(p_y, q_y));
   }
 
   twist(p) {
@@ -187,7 +210,7 @@ class Curve {
 
   cast_point_to_fq12(p) {
     assert(this.F instanceof F);
-    if (this.is_inf(p)) {
+    if (this.isInf(p)) {
       return this.inf();
     }
     const [p_x, p_y] = p;
