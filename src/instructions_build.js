@@ -23,7 +23,7 @@ class FOpsBuilder {
   field_modulus =
     4002409555221667393417789825735904156556882819939007885332058136124031650490837864442687629129015664037894272559787n;
 
-  //   ramAddrToBigNum(addr) {
+  //   ramAddrToBigInt(addr) {
   //     res = BigInt(0);
   //     for (var i = 0; i < 8; i++) {
   //       res += this.pols.ramVal[i][addr] << (48n * BigInt(i));
@@ -49,10 +49,10 @@ class FOpsBuilder {
   mul(a, b) {
     const addr = this.address_counter;
     for (var i = 0; i < 48; i++) {
-      this.pA[this.instruction_counter] = a;
-      this.pB[this.instruction_counter] = b;
-      this.pC[this.instruction_counter] = this.zero;
-      this.pD[this.instruction_counter] = addr;
+      this.pA[this.instruction_counter] = BigInt(a);
+      this.pB[this.instruction_counter] = BigInt(b);
+      this.pC[this.instruction_counter] = BigInt(this.zero);
+      this.pD[this.instruction_counter] = BigInt(addr);
       this.instructionMapping.set(this.instruction_counter, [
         a,
         b,
@@ -72,10 +72,10 @@ class FOpsBuilder {
   inv(a) {
     const addr = this.address_counter;
     for (var i = 0; i < 48; i++) {
-      this.pA[this.instruction_counter] = a;
-      this.pB[this.instruction_counter] = addr;
-      this.pC[this.instruction_counter] = this.zero;
-      this.pD[this.instruction_counter] = this.zero;
+      this.pA[this.instruction_counter] = BigInt(a);
+      this.pB[this.instruction_counter] = BigInt(addr);
+      this.pC[this.instruction_counter] = BigInt(this.zero);
+      this.pD[this.instruction_counter] = BigInt(this.zero);
       this.instructionMapping.set(this.instruction_counter, [
         a,
         addr,
@@ -100,10 +100,10 @@ class FOpsBuilder {
     const addr_out = this.address_counter;
     this.address_counter++;
     for (var i = 0; i < 48; i++) {
-      this.pA[this.instruction_counter] = a;
-      this.pB[this.instruction_counter] = addr_inter;
-      this.pC[this.instruction_counter] = this.one;
-      this.pD[this.instruction_counter] = addr_out;
+      this.pA[this.instruction_counter] = BigInt(a);
+      this.pB[this.instruction_counter] = BigInt(addr_inter);
+      this.pC[this.instruction_counter] = BigInt(this.one);
+      this.pD[this.instruction_counter] = BigInt(addr_out);
       this.instructionMapping.set(this.instruction_counter, [
         a,
         addr_inter,
@@ -116,10 +116,10 @@ class FOpsBuilder {
       this.instruction_counter++;
     }
     for (var i = 0; i < 48; i++) {
-      this.pA[this.instruction_counter] = a;
-      this.pB[this.instruction_counter] = addr_out;
-      this.pC[this.instruction_counter] = this.zero;
-      this.pD[this.instruction_counter] = this.zero;
+      this.pA[this.instruction_counter] = BigInt(a);
+      this.pB[this.instruction_counter] = BigInt(addr_out);
+      this.pC[this.instruction_counter] = BigInt(this.zero);
+      this.pD[this.instruction_counter] = BigInt(this.zero);
       this.instructionMapping.set(this.instruction_counter, [
         a,
         addr_out,
@@ -138,10 +138,10 @@ class FOpsBuilder {
 
   assertEqual(a, b) {
     for (var i = 0; i < 48; i++) {
-      this.pA[this.instruction_counter] = a;
-      this.pB[this.instruction_counter] = this.one;
-      this.pC[this.instruction_counter] = this.zero;
-      this.pD[this.instruction_counter] = b;
+      this.pA[this.instruction_counter] = BigInt(a);
+      this.pB[this.instruction_counter] = BigInt(this.one);
+      this.pC[this.instruction_counter] = BigInt(this.zero);
+      this.pD[this.instruction_counter] = BigInt(b);
       this.instructionMapping.set(this.instruction_counter, [
         a,
         "one",
@@ -158,10 +158,10 @@ class FOpsBuilder {
   add(a, b) {
     const addr = this.address_counter;
     for (var i = 0; i < 48; i++) {
-      this.pA[this.instruction_counter] = a;
-      this.pB[this.instruction_counter] = this.one;
-      this.pC[this.instruction_counter] = b;
-      this.pD[this.instruction_counter] = addr;
+      this.pA[this.instruction_counter] = BigInt(a);
+      this.pB[this.instruction_counter] = BigInt(this.one);
+      this.pC[this.instruction_counter] = BigInt(b);
+      this.pD[this.instruction_counter] = BigInt(addr);
       this.instructionMapping.set(this.instruction_counter, [
         a,
         "one",
@@ -181,10 +181,10 @@ class FOpsBuilder {
   sub(a, b) {
     const addr = this.address_counter;
     for (var i = 0; i < 48; i++) {
-      this.pA[this.instruction_counter] = this.neg_one;
-      this.pB[this.instruction_counter] = b;
-      this.pC[this.instruction_counter] = a;
-      this.pD[this.instruction_counter] = addr;
+      this.pA[this.instruction_counter] = BigInt(this.neg_one);
+      this.pB[this.instruction_counter] = BigInt(b);
+      this.pC[this.instruction_counter] = BigInt(a);
+      this.pD[this.instruction_counter] = BigInt(addr);
       this.instructionMapping.set(this.instruction_counter, [
         "neg_one",
         b,
@@ -209,10 +209,10 @@ class FOpsBuilder {
     // Else return b
     const addr_aux = this.address_counter;
     for (var i = 0; i < 48; i++) {
-      this.pA[this.instruction_counter] = c;
-      this.pB[this.instruction_counter] = a;
-      this.pC[this.instruction_counter] = b;
-      this.pD[this.instruction_counter] = addr_aux;
+      this.pA[this.instruction_counter] = BigInt(c);
+      this.pB[this.instruction_counter] = BigInt(a);
+      this.pC[this.instruction_counter] = BigInt(b);
+      this.pD[this.instruction_counter] = BigInt(addr_aux);
       this.instructionMapping.set(this.instruction_counter, [
         c,
         a,
@@ -224,10 +224,10 @@ class FOpsBuilder {
     this.address_counter++;
     const addr_out = this.address_counter;
     for (var i = 0; i < 48; i++) {
-      this.pA[this.instruction_counter] = c;
-      this.pB[this.instruction_counter] = b;
-      this.pC[this.instruction_counter] = addr_out;
-      this.pD[this.instruction_counter] = addr_aux;
+      this.pA[this.instruction_counter] = BigInt(c);
+      this.pB[this.instruction_counter] = BigInt(b);
+      this.pC[this.instruction_counter] = BigInt(addr_out);
+      this.pD[this.instruction_counter] = BigInt(addr_aux);
       this.instructionMapping.set(this.instruction_counter, [
         c,
         b,

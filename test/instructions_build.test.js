@@ -23,9 +23,6 @@ function ramAddrToBigNum(addr, pols) {
 }
 
 function storeToRamAddr(bigNum, addr, pols) {
-  console.log("store", pols.main.ramVal.length);
-  // console.log(pols.main.ramVal[i]);
-  console.log(addr);
   for (var i = 0; i < 8; i++) {
     pols.main.ramVal[i][addr] = BigInt(bigNum & 0xffffffffffffn);
     bigNum >>= 48n;
@@ -55,7 +52,12 @@ function populateArith(pol, bigInt, counter) {
   }
 }
 
+function populateArithCarry(pol, bigInt, counter) {
+  pol[counter] = bigInt;
+}
+
 const executeArith = async function (pols, instructionMapping) {
+  console.log("At top of execute arith");
   // This is assuming we've already filled the ram addr
   instructionMapping.forEach((vals, counter) => {
     const a = getAsBigInt(pols, vals[0]);
@@ -70,7 +72,9 @@ const executeArith = async function (pols, instructionMapping) {
     const inv = FOps.inv(0xffffffff00000001n); // This is the goldilocks prime
     const dValue = FOps.mul(FOps.sub(FOps.add(FOps.mul(a, b), c), d), inv);
     populateArith(pols.Arith384.d, dValue, counter);
+    populateArithCarry(pols.Arith384.carry, 0n, counter);
   });
+  console.log("End of execute arith");
 };
 
 execute = async function (pols, inputs, trace, constPols) {
@@ -78,8 +82,11 @@ execute = async function (pols, inputs, trace, constPols) {
   const ramVals = pols.main;
   // Store the inputs in the ram
   for (let i = 0; i < inputs.length; i++) {
+    console.log("storing inputs", inputs[i], i);
     storeToRamAddr(inputs[i], i, pols);
   }
+
+  console.log("Done with inputs");
 
   for (let i = 0; i < constPols.main.isConstant.length; i++) {
     if (constPols.main.isConstant[i] == 1n) {
@@ -91,6 +98,8 @@ execute = async function (pols, inputs, trace, constPols) {
       storeToRamAddr(res, i, pols);
     }
   }
+
+  console.log("Done with constants");
 
   trace.forEach((instruction, addr) => {
     if (instruction[0] == "mul") {
@@ -148,6 +157,7 @@ execute = async function (pols, inputs, trace, constPols) {
       throw Error("Unknown instruction", instruction[0]);
     }
   });
+  console.log("Done with trace");
 };
 
 initialize = async function (pols) {
@@ -175,6 +185,40 @@ initializeCommit = async function (pols) {
   }
 };
 
+function buidBYTE2(pol, N) {
+  const m = 1 << 16;
+  if (N < m) throw new Error("GLOBAL.BYTE does not fit");
+  for (let i = 0; i < m; i++) {
+    pol[i] = BigInt(i);
+  }
+
+  for (let i = m; i < N; i++) {
+    pol[i] = 0n;
+  }
+}
+
+function buidBYTE(pol, N) {
+  if (N < 256) throw new Error("GLOBAL.BYTE does not fit");
+
+  for (let i = 0; i < 256; i++) {
+    pol[i] = BigInt(i);
+  }
+
+  for (let i = 256; i < N; i++) {
+    pol[i] = 0n;
+  }
+}
+
+function buildL1(pol) {
+  for (let i = 0; i < pol.length; i++) {
+    if (i % 48 == 0) {
+      pol[i] = BigInt(1);
+    } else {
+      pol[i] = BigInt(0);
+    }
+  }
+}
+
 describe("test instructions_build", async function () {
   this.timeout(10000000);
   const Fr = new F1Field("0xFFFFFFFF00000001");
@@ -185,6 +229,9 @@ describe("test instructions_build", async function () {
     constPols = newConstantPolsArray(pil);
     await initialize(constPols);
     await buildConstantsArith(constPols.Arith384);
+    buidBYTE(constPols.Global.BYTE, constPols.Global.BYTE.length);
+    buidBYTE2(constPols.Global.BYTE2, constPols.Global.BYTE.length);
+    buildL1(constPols.Global.L1);
     const instructions = new InstructionsBuilder(constPols);
     const engine = new Engine(instructions);
     engine.G1.add([0n, 1n], [2n, 3n]);
@@ -218,14 +265,23 @@ describe("test instructions_build", async function () {
     // console.log("body", cmPols.main);
     await execute(cmPols, input, instructions.trace, constPols);
     await executeArith(cmPols, instructions.instructionMapping);
+    console.log("Done");
 
-    // const res = await verifyPil(Fr, pil, cmPols, constPols);
-    // if (res.length != 0) {
-    //   console.log("Pil does not pass");
-    //   for (let i = 0; i < res.length; i++) {
-    //     console.log(res[i]);
-    //   }
-    //   assert(0);
-    // }
+    for (var i = 0; i < 8; i++) {
+      cmPols.main.ramVal[i].map((x, i) => {
+        if (typeof x != "bigint") {
+          throw Error(`ramVal ${(x, i)}`);
+        }
+      });
+    }
+
+    const res = await verifyPil(Fr, pil, cmPols, constPols);
+    if (res.length != 0) {
+      console.log("Pil does not pass");
+      for (let i = 0; i < res.length; i++) {
+        console.log(res[i]);
+      }
+      assert(0);
+    }
   });
 });
