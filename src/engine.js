@@ -543,8 +543,101 @@ class Engine {
   pairing(p, q) {
     const qPrep = this.prepareG2(q);
     const m = this.miller_loop(p, qPrep);
+    /*
     const exponent = 322277361516934140462891564586510139908379969514828494218366688025288661041104682794998680497580008899973249814104447692778988208376779573819485263026159588510513834876303014016798809919343532899164848730280942609956670917565618115867287399623286813270357901731510188149934363360381614501334086825442271920079363289954510565375378443704372994881406797882676971082200626541916413184642520269678897559532260949334760604962086348898118982248842634379637598665468817769075878555493752214492790122785850202957575200176084204422751485957336465472324810982833638490904279282696134323072515220044451592646885410572234451732790590013479358343841220074174848221722017083597872017638514103174122784843925578370430843522959600095676285723737049438346544753168912974976791528535276317256904336520179281145394686565050419250614107803233314658825463117900250701199181529205942363159325765991819433914303908860460720581408201373164047773794825411011922305820065611121544561808414055302212057471395719432072209245600258134364584636810093520285711072578721435517884103526483832733289802426157301542744476740008494780363354305116978805620671467071400711358839553375340724899735460480144599782014906586543813292157922220645089192130209334926661588737007768565838519456601560804957985667880395221049249803753582637708560n;
     return this.F12.exp(m, exponent);
+    */
+    return this.finalExponentiation(m);
+  }
+
+  finalExponentiation(elt) {
+    const F12 = this.F12;
+
+    let t0, t1, t2, t3, t4, t5, t6;
+
+    // let mut t0 = f.frobenius_map(6)
+    t0 = this.frobenius(6, elt)
+
+    // let t1 = f.invert()
+    t1 = F12.inv(elt)
+
+    // let mut t2 = t0 * t1;
+    t2 = F12.mul(t0, t1);
+
+    // t1 = t2.clone();
+    t1 = t2;
+
+    // t2 = t2.frobenius_map().frobenius_map();
+    t2 = this.frobenius(2, t2);
+
+    // t2 *= t1;
+    t2 = F12.mul(t2, t1);
+
+    // t1 = cyclotomic_square(t2).conjugate();
+    t1 = this.f12_cyclotomicSquare(t2);
+    t1 = F12.conjugate(t1);
+
+    // let mut t3 = cycolotomic_exp(t2);
+    t3 = this.f12_cyclotomicExp(t2);
+
+    // let mut t4 = cyclotomic_square(t3);
+    t4 = this.f12_cyclotomicSquare(t3);
+
+    // let mut t5 = t1 * t3;
+    t5 = F12.mul(t1, t3);
+
+    // t1 = cycolotomic_exp(t5);
+    t1 = this.f12_cyclotomicExp(t5);
+
+    // t0 = cycolotomic_exp(t1);
+    t0 = this.f12_cyclotomicExp(t1);
+
+    // let mut t6 = cycolotomic_exp(t0);
+    t6 = this.f12_cyclotomicExp(t0);
+
+    // t6 *= t4;
+    t6 = F12.mul(t6, t4);
+
+    // t4 = cycolotomic_exp(t6);
+    t4 = this.f12_cyclotomicExp(t6);
+
+    // t5 = t5.conjugate();
+    t5 = F12.conjugate(t5);
+
+    // t4 *= t5 * t2;
+    t4 = F12.mul( t4, F12.mul( t5, t2) );
+
+    // t5 = t2.conjugate();
+    t5 = F12.conjugate(t2);
+
+    // t1 *= t2;
+    t1 = F12.mul(t1, t2);
+
+    // t1 = t1.frobenius_map().frobenius_map().frobenius_map();
+    t1 = this.frobenius(3, t1);
+
+    // t6 *= t5;
+    t6 = F12.mul(t6, t5);
+
+    // t6 = t6.frobenius_map();
+    t6 = this.frobenius(1, t6);
+
+    // t3 *= t0;
+    t3 = F12.mul(t3, t0);
+
+    // t3 = t3.frobenius_map().frobenius_map();
+    t3 = this.frobenius(2, t3);
+
+    // t3 *= t1;
+    t3 = F12.mul(t3, t1);
+
+    // t3 *= t6;
+    t3 = F12.mul(t3, t6);
+
+    // f = t3 * t4;
+    const f = F12.mul(t3, t4);
+
+    return f;
   }
 }
 

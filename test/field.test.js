@@ -12,7 +12,6 @@ describe("BLS Field", function () {
     before(function() {
         engine = new Engine(instructions);
     });
-/*
     it("should add in F1", async function () {
         const a = 3n;
         const b = 4n;
@@ -618,7 +617,6 @@ describe("BLS Field", function () {
             engine.F12.assertEqual(res1, res2);
         }
     });
-*/
     it("should check frobenius f6_mul1", async function () {
         const a = [[1n, 2n], [3n, 4n], [5n, 6n]];
         const b = [[0n, 0n], [3n, 4n], [0n, 0n]];
