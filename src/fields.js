@@ -98,7 +98,7 @@ class F1 {
     return this.I.isZero(a);
   }
 
-  eq(a, b) {
+  isEq(a, b) {
     return this.isZero(this.sub(a,b));
   }
 
@@ -194,7 +194,7 @@ class F2 {
     );
   }
 
-  eq(a, b) {
+  isEq(a, b) {
     return this.isZero(this.sub(a,b));
   }
 
@@ -347,7 +347,7 @@ class F3 {
     );
   }
 
-  eq(a, b) {
+  isEq(a, b) {
     return this.isZero(this.sub(a,b));
   }
 }
