@@ -4,7 +4,22 @@ const F3 = require("./fields").F3;
 const Curve = require("./curve");
 const assert = require("chai").assert;
 
-const log_ate_loop_count = 62
+const log_ate_loop_count = 62;
+
+const g1 = [
+  3685416753713387016781088315183077757961620795782546409894578378688607592378376318836054947676345821548104185464507n,
+  1339506544944476473020471379941921221584933875938349620426543736416511423956333506472724655353366534992391756441569n,
+];
+const g2 = [
+  [
+    352701069587466618187139116011060144890029952792775240219908644239793785735715026873347600343865175952761926303160n,
+    3059144344244213709971259814753781636986470325476647558659373206291635324768958432433509563104347017837885763365758n,
+  ],
+  [
+    1985150602287291935568054521177171638300868978215655730859378665066344726373823718423869104263333984641494340347905n,
+    927553665492332455747201965776037880757740193453592970025027978793976877002675564980949289727957565575433344219582n,
+  ],
+];
 
 class Engine {
   constructor(instructions) {
@@ -37,7 +52,7 @@ class Engine {
   }
 
   line_func(p1, p2, t) {
-    if (p1.is_inf() && p2.is_inf() && t.is_inf()) return;
+    if (p1.isInf() && p2.isInf() && t.isInf()) return;
     x1 = p1[0];
     y1 = p1[1];
     x2 = p2[0];
@@ -58,7 +73,7 @@ class Engine {
       // m = 3 * x1**2 / (2 * y1)
       // return m * (xt - x1) - (yt - y1)
       let num = F12.mul_escalar(F12.square(x1), 3);
-      let den = F12.add(y1, y1)
+      let den = F12.add(y1, y1);
       let m = F12.mul(num, F12.inv(den));
       let a = F12.add(xt, F12.neg(x1));
       let b = F12.add(y1, F12.neg(yt));
@@ -71,11 +86,16 @@ class Engine {
   }
 
   final_exponentiation(p) {
-    return F12.exp(p, Math.floor((instructions.field_modulus ** 12 - 1) / instructions.curve_order))
+    return F12.exp(
+      p,
+      Math.floor(
+        (instructions.field_modulus ** 12 - 1) / instructions.curve_order
+      )
+    );
   }
 
   miller_loop(p1, p2) {
-    if (p1.is_inf() || p2.is_inf()) {
+    if (p1.isInf() || p2.isInf()) {
       return F12.one();
     }
     let R = p1;
@@ -88,12 +108,17 @@ class Engine {
         R = F12.add(R, Q);
       }
     }
-    return F12.exp(f, Math.floor((instructions.field_modulus ** 12 - 1) / instructions.curve_order))
+    return F12.exp(
+      f,
+      Math.floor(
+        (instructions.field_modulus ** 12 - 1) / instructions.curve_order
+      )
+    );
   }
 
   pairing(p2, p1) {
-    assert(this.G1.is_on_curve(p1));
-    assert(this.G2.is_on_curve(p2));
+    assert(this.G1.isOnCurve(p1));
+    assert(this.G2.isOnCurve(p2));
     const twisted = this.G2.twist(p2);
     const casted = this.G1.cast_point_to_fq12(p1);
     const res = this.miller_loop(twisted, casted);
