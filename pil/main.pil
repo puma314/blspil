@@ -21,19 +21,19 @@ namespace main(%N);
     isConstant * (ConstVal[6] - ramVal[6]) = 0;
     isConstant * (ConstVal[7] - ramVal[7]) = 0;
 
-    // Arith.x1[x] => 16 bits
+    // Arith384.a[x] => 16 bits
     // 3 registries => 16 * 3 = 48 bits
     // 8 registries of 3 => 384 bits
     {
         pA, 
-        Arith.x1[0] + 2**16* Arith.x1[1] + 2**32 * Arith.x1[2],
-        Arith.x1[3] + 2**16* Arith.x1[4] + 2**32 * Arith.x1[5],
-        Arith.x1[6] + 2**16* Arith.x1[7] + 2**32 * Arith.x1[8],
-        Arith.x1[9] + 2**16* Arith.x1[10] + 2**32 * Arith.x1[11],
-        Arith.x1[12] + 2**16* Arith.x1[13] + 2**32 * Arith.x1[14],
-        Arith.x1[15] + 2**16* Arith.x1[16] + 2**32 * Arith.x1[17],
-        Arith.x1[18] + 2**16* Arith.x1[19] + 2**32 * Arith.x1[20],
-        Arith.x1[21] + 2**16* Arith.x1[22] + 2**32 * Arith.x1[23]
+        Arith384.a[0] + 2**16* Arith384.a[1] + 2**32 * Arith384.a[2],
+        Arith384.a[3] + 2**16* Arith384.a[4] + 2**32 * Arith384.a[5],
+        Arith384.a[6] + 2**16* Arith384.a[7] + 2**32 * Arith384.a[8],
+        Arith384.a[9] + 2**16* Arith384.a[10] + 2**32 * Arith384.a[11],
+        Arith384.a[12] + 2**16* Arith384.a[13] + 2**32 * Arith384.a[14],
+        Arith384.a[15] + 2**16* Arith384.a[16] + 2**32 * Arith384.a[17],
+        Arith384.a[18] + 2**16* Arith384.a[19] + 2**32 * Arith384.a[20],
+        Arith384.a[21] + 2**16* Arith384.a[22] + 2**32 * Arith384.a[23]
     } in {
         RamAddr,
         ramVal[0],
@@ -48,14 +48,14 @@ namespace main(%N);
 
     {
         pB, 
-        Arith.y1[0] + 2**16* Arith.y1[1] + 2**32 * Arith.y1[2],
-        Arith.y1[3] + 2**16* Arith.y1[4] + 2**32 * Arith.y1[5],
-        Arith.y1[6] + 2**16* Arith.y1[7] + 2**32 * Arith.y1[8],
-        Arith.y1[9] + 2**16* Arith.y1[10] + 2**32 * Arith.y1[11],
-        Arith.y1[12] + 2**16* Arith.y1[13] + 2**32 * Arith.y1[14],
-        Arith.y1[15] + 2**16* Arith.y1[16] + 2**32 * Arith.y1[17],
-        Arith.y1[18] + 2**16* Arith.y1[19] + 2**32 * Arith.y1[20],
-        Arith.y1[21] + 2**16* Arith.y1[22] + 2**32 * Arith.y1[23]
+        Arith384.b[0] + 2**16* Arith384.b[1] + 2**32 * Arith384.b[2],
+        Arith384.b[3] + 2**16* Arith384.b[4] + 2**32 * Arith384.b[5],
+        Arith384.b[6] + 2**16* Arith384.b[7] + 2**32 * Arith384.b[8],
+        Arith384.b[9] + 2**16* Arith384.b[10] + 2**32 * Arith384.b[11],
+        Arith384.b[12] + 2**16* Arith384.b[13] + 2**32 * Arith384.b[14],
+        Arith384.b[15] + 2**16* Arith384.b[16] + 2**32 * Arith384.b[17],
+        Arith384.b[18] + 2**16* Arith384.b[19] + 2**32 * Arith384.b[20],
+        Arith384.b[21] + 2**16* Arith384.b[22] + 2**32 * Arith384.b[23]
     } in {
         RamAddr,
         ramVal[0],
@@ -70,14 +70,14 @@ namespace main(%N);
 
     {
         pC, 
-        Arith.x2[0] + 2**16* Arith.x2[1] + 2**32 * Arith.x2[2],
-        Arith.x2[3] + 2**16* Arith.x2[4] + 2**32 * Arith.x2[5],
-        Arith.x2[6] + 2**16* Arith.x2[7] + 2**32 * Arith.x2[8],
-        Arith.x2[9] + 2**16* Arith.x2[10] + 2**32 * Arith.x2[11],
-        Arith.x2[12] + 2**16* Arith.x2[13] + 2**32 * Arith.x2[14],
-        Arith.x2[15] + 2**16* Arith.x2[16] + 2**32 * Arith.x2[17],
-        Arith.x2[18] + 2**16* Arith.x2[19] + 2**32 * Arith.x2[20],
-        Arith.x2[21] + 2**16* Arith.x2[22] + 2**32 * Arith.x2[23]
+        Arith384.c[0] + 2**16* Arith384.c[1] + 2**32 * Arith384.c[2],
+        Arith384.c[3] + 2**16* Arith384.c[4] + 2**32 * Arith384.c[5],
+        Arith384.c[6] + 2**16* Arith384.c[7] + 2**32 * Arith384.c[8],
+        Arith384.c[9] + 2**16* Arith384.c[10] + 2**32 * Arith384.c[11],
+        Arith384.c[12] + 2**16* Arith384.c[13] + 2**32 * Arith384.c[14],
+        Arith384.c[15] + 2**16* Arith384.c[16] + 2**32 * Arith384.c[17],
+        Arith384.c[18] + 2**16* Arith384.c[19] + 2**32 * Arith384.c[20],
+        Arith384.c[21] + 2**16* Arith384.c[22] + 2**32 * Arith384.c[23]
     } in {
         RamAddr,
         ramVal[0],
@@ -92,14 +92,14 @@ namespace main(%N);
 
     {
         pD, 
-        Arith.y2[0] + 2**16* Arith.y2[1] + 2**32 * Arith.y2[2],
-        Arith.y2[3] + 2**16* Arith.y2[4] + 2**32 * Arith.y2[5],
-        Arith.y2[6] + 2**16* Arith.y2[7] + 2**32 * Arith.y2[8],
-        Arith.y2[9] + 2**16* Arith.y2[10] + 2**32 * Arith.y2[11],
-        Arith.y2[12] + 2**16* Arith.y2[13] + 2**32 * Arith.y2[14],
-        Arith.y2[15] + 2**16* Arith.y2[16] + 2**32 * Arith.y2[17],
-        Arith.y2[18] + 2**16* Arith.y2[19] + 2**32 * Arith.y2[20],
-        Arith.y2[21] + 2**16* Arith.y2[22] + 2**32 * Arith.y2[23]
+        Arith384.d[0] + 2**16* Arith384.d[1] + 2**32 * Arith384.d[2],
+        Arith384.d[3] + 2**16* Arith384.d[4] + 2**32 * Arith384.d[5],
+        Arith384.d[6] + 2**16* Arith384.d[7] + 2**32 * Arith384.d[8],
+        Arith384.d[9] + 2**16* Arith384.d[10] + 2**32 * Arith384.d[11],
+        Arith384.d[12] + 2**16* Arith384.d[13] + 2**32 * Arith384.d[14],
+        Arith384.d[15] + 2**16* Arith384.d[16] + 2**32 * Arith384.d[17],
+        Arith384.d[18] + 2**16* Arith384.d[19] + 2**32 * Arith384.d[20],
+        Arith384.d[21] + 2**16* Arith384.d[22] + 2**32 * Arith384.d[23]
     } in {
         RamAddr,
         ramVal[0],

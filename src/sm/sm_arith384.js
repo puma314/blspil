@@ -1,20 +1,14 @@
 const {assert,expect} = require("chai");
 const fs = require("fs");
-const pilTools = require(__dirname + '/../tools/pilTools.js');
+const pilTools = require(__dirname + '/../../../tools/arith/pilTools.js');
 
 const F1Field = require("ffjavascript").F1Field;
-const outPilFile = __dirname + '/../pil/arith384.pil';
-const outPilHelperFile = __dirname + '/../src/arith384.js';
-const pilTemplateFile = __dirname + "/../pil/arith/arith384.ejs.pil";
+const outPilFile = __dirname + '/../../../build/arith384.pil';
+const outPilHelperFile = __dirname + '/../../../build/arith384.js';
+const pilTemplateFile = __dirname + "/arith384.ejs.pil";
 let pilHelper;
 
-const {
-  newConstantPolsArray,
-  newCommitPolsArray,
-  compile,
-  verifyPil,
-  F,
-} = require("pilcom");
+const { newConstantPolsArray, newCommitPolsArray, compile, verifyPil, F } = require("pilcom");
 
 const input = [
     {
@@ -123,6 +117,7 @@ const buildConstants = async function (pols) {
     });
 }
 
+
 execute = async function (pols, input) {
     const N = pols.a[0].length;
     for(let i = 0; i < N; ++i) {
@@ -135,11 +130,10 @@ execute = async function (pols, input) {
         }
         pols.carry[i] = 0n;
     }
-  }
 
-  const Fr = new F1Field(0xffffffff00000001n);
-  const chunks = 24;
-  const steps = chunks * 2;
+    const Fr = new F1Field(0xffffffff00000001n);
+    const chunks = 24;
+    const steps = chunks * 2;
 
     // Split the input in little-endian bytes
     prepareInput256bits(input, N, chunks);
@@ -162,8 +156,7 @@ execute = async function (pols, input) {
             carry = (value + carry) / (2n ** 16n);
         }
     }
-  }
-};
+}
 
 describe("test plookup operations", async function () {
 
@@ -175,37 +168,28 @@ describe("test plookup operations", async function () {
         const pilTemplate = fs.readFileSync(pilTemplateFile, {encoding:'utf8', flag:'r'});
         const pilCode = pilTools.generatePilFromTemplate(pilTemplate);
         fs.writeFileSync(outPilFile, pilCode);
-        pil = await compile(Fr, outPilFile);
+        pil = await compile(Fr, outPilFile, null, {defines: { N: 2 ** 21 }});
         pilTools.generatePilHelpers(pilTemplateFile, outPilHelperFile);
         pilHelper = require(outPilHelperFile);
 
         constPols = newConstantPolsArray(pil);
         await buildConstants(constPols.Arith384);
     });
-    const pilCode = pilTools.generatePilFromTemplate(pilTemplate);
-    fs.writeFileSync(outPilFile, pilCode);
-    pil = await compile(Fr, outPilFile, null, { defines: { N: 2 ** 16 } });
-    pilTools.generatePilHelpers(pilTemplateFile, outPilHelperFile);
-    pilHelper = require(outPilHelperFile);
 
     it("It should verify the binary operations pil", async () => {
         cmPols = newCommitPolsArray(pil);
         await execute(cmPols.Arith384, input);
 
-  it("It should verify the binary operations pil", async () => {
-    cmPols = newCommitPolsArray(pil);
-    await execute(cmPols.Arith, input);
+        const res = await verifyPil(Fr, pil, cmPols, constPols);
 
-    const res = await verifyPil(Fr, pil, cmPols, constPols);
-
-    if (res.length != 0) {
-      console.log("Pil does not pass");
-      for (let i = 0; i < res.length; i++) {
-        console.log(res[i]);
-      }
-      assert(0);
-    }
-  });
+        if (res.length != 0) {
+            console.log("Pil does not pass");
+            for (let i = 0; i < res.length; i++) {
+                console.log(res[i]);
+            }
+            assert(0);
+        }
+    });
 });
 
 function prepareInput256bits(input, N, chunks = 16) {
@@ -214,21 +198,17 @@ function prepareInput256bits(input, N, chunks = 16) {
             input[i][`_${key}`] = to16bitsRegisters(input[i][key], chunks);
         }
     }
-  }
 }
 
 function to16bitsRegisters(value, chunks = 16) {
-  if (typeof value !== "bigint") {
-    value = BigInt(value);
-  }
-  let parts = [];
-  for (let index = 0; index < chunks; ++index) {
-    const part = value & 0xffffn;
-    parts.push(part);
-    value = value >> 16n;
-  }
-  return parts;
+    if (typeof value !== 'bigint') {
+        value = BigInt(value);
+    }
+    let parts = [];
+    for (let index = 0; index < chunks; ++index) {
+        const part = value & 0xFFFFn;
+        parts.push(part);
+        value = value >> 16n;
+    }
+    return parts;
 }
-
-module.exports.buildConstants = buildConstants;
-module.exports.execute = execute;
