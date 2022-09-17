@@ -23,6 +23,9 @@ function ramAddrToBigNum(addr, pols) {
 }
 
 function storeToRamAddr(bigNum, addr, pols) {
+  console.log("store", pols.main.ramVal.length);
+  // console.log(pols.main.ramVal[i]);
+  console.log(addr);
   for (var i = 0; i < 8; i++) {
     pols.main.ramVal[i][addr] = BigInt(bigNum & 0xffffffffffffn);
     bigNum >>= 48n;
@@ -55,15 +58,10 @@ function populateArith(pol, bigInt, counter) {
 const executeArith = async function (pols, instructionMapping) {
   // This is assuming we've already filled the ram addr
   instructionMapping.forEach((vals, counter) => {
-    console.log(vals, counter);
     const a = getAsBigInt(pols, vals[0]);
-    console.log(vals[1]);
     const b = getAsBigInt(pols, vals[1]);
     const c = getAsBigInt(pols, vals[2]);
     const d = getAsBigInt(pols, vals[3]);
-    console.log(counter);
-    console.log(a, b, c, d);
-    // console.log(pols.Arith384.a[counter]);
     populateArith(pols.Arith384.a, a, counter);
     populateArith(pols.Arith384.b, b, counter);
     populateArith(pols.Arith384.c, c, counter);
@@ -76,7 +74,8 @@ const executeArith = async function (pols, instructionMapping) {
 };
 
 execute = async function (pols, inputs, trace, constPols) {
-  const ramVals = pols.main.ramVal;
+  console.log("execute", pols.main.ramVal.length);
+  const ramVals = pols.main;
   // Store the inputs in the ram
   for (let i = 0; i < inputs.length; i++) {
     storeToRamAddr(inputs[i], i, pols);
@@ -216,6 +215,7 @@ describe("test instructions_build", async function () {
     const input = [g1[0], g1[1], g1[0], g1[1]];
     cmPols = newCommitPolsArray(pil);
     await initializeCommit(cmPols.main);
+    // console.log("body", cmPols.main);
     await execute(cmPols, input, instructions.trace, constPols);
     await executeArith(cmPols, instructions.instructionMapping);
 

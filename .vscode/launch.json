@@ -50,21 +50,15 @@
       "name": "Test instruction_build",
       "skipFiles": ["<node_internals>/**"],
       "program": "${workspaceFolder}/node_modules/mocha/bin/_mocha",
-      "args": [
-        "${workspaceFolder}/test/pil.test.js"
-      ]
+      "args": ["${workspaceFolder}/test/instructions_build.test.js"]
     },
     {
       "type": "pwa-node",
       "request": "launch",
       "name": "Test pairings",
-      "skipFiles": [
-        "<node_internals>/**"
-      ],
+      "skipFiles": ["<node_internals>/**"],
       "program": "${workspaceFolder}/node_modules/mocha/bin/_mocha",
-      "args": [
-        "${workspaceFolder}/test/pairings.test.js"
-      ]
+      "args": ["${workspaceFolder}/test/pairings.test.js"]
     }
   ]
 }

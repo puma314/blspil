@@ -59,13 +59,13 @@ class FOpsBuilder {
         "zero",
         addr,
       ]);
-      if (this.instruction_counter == 336) {
-        throw Error(a, b);
-      }
+      // if (this.instruction_counter == 336) {
+      //   throw Error(a, b);
+      // }
       this.instruction_counter++;
     }
     this.address_counter++;
-    this.trace[addr] = ["mul", a, b];
+    this.trace.set(addr, ["mul", a, b]);
     return addr;
   }
 
@@ -82,13 +82,13 @@ class FOpsBuilder {
         "zero",
         "zero",
       ]);
-      if (this.instruction_counter == 336) {
-        throw Error(a);
-      }
+      // if (this.instruction_counter == 336) {
+      //   throw Error(a);
+      // }
       this.instruction_counter++;
     }
     this.address_counter++;
-    this.trace[addr] = ["inv", a];
+    this.trace.set(addr, ["inv", a]);
     return addr;
   }
 
@@ -110,9 +110,9 @@ class FOpsBuilder {
         "one",
         addr_out,
       ]);
-      if (this.instruction_counter == 336) {
-        throw Error(a);
-      }
+      // if (this.instruction_counter == 336) {
+      //   throw Error(a);
+      // }
       this.instruction_counter++;
     }
     for (var i = 0; i < 48; i++) {
@@ -126,13 +126,13 @@ class FOpsBuilder {
         "zero",
         "zero",
       ]);
-      if (this.instruction_counter == 336) {
-        throw Error(a);
-      }
+      // if (this.instruction_counter == 336) {
+      //   throw Error(a);
+      // }
       this.instruction_counter++;
     }
-    this.trace[addr_inter] = ["isZeroAux", a]; // If val_a = 0, then 0, else -1/a
-    this.trace[addr_out] = ["isZero", a];
+    this.trace.set(addr_inter, ["isZeroAux", a]); // If val_a = 0, then 0, else -1/a
+    this.trace.set(addr_out, ["isZero", a]);
     return addr_out;
   }
 
@@ -148,9 +148,9 @@ class FOpsBuilder {
         "zero",
         b,
       ]);
-      if (this.instruction_counter == 336) {
-        throw Error(a);
-      }
+      // if (this.instruction_counter == 336) {
+      //   throw Error(a);
+      // }
       this.instruction_counter++;
     }
   }
@@ -168,12 +168,12 @@ class FOpsBuilder {
         b,
         addr,
       ]);
-      if (this.instruction_counter == 336) {
-        throw Error(a);
-      }
+      // if (this.instruction_counter == 336) {
+      //   throw Error(a);
+      // }
       this.instruction_counter++;
     }
-    this.trace[addr] = ["add", a, b];
+    this.trace.set(addr, ["add", a, b]);
     this.address_counter++;
     return addr;
   }
@@ -191,12 +191,12 @@ class FOpsBuilder {
         a,
         addr,
       ]);
-      if (this.instruction_counter == 336) {
-        throw Error(a);
-      }
+      // if (this.instruction_counter == 336) {
+      //   throw Error(a);
+      // }
       this.instruction_counter++;
     }
-    this.trace[addr] = ["sub", a, b];
+    this.trace.set(addr, ["sub", a, b]);
     this.address_counter++;
     return addr;
   }
@@ -219,9 +219,6 @@ class FOpsBuilder {
         b,
         addr_aux,
       ]);
-      if (this.instruction_counter == 336) {
-        throw Error("first", a);
-      }
       this.instruction_counter++;
     }
     this.address_counter++;
@@ -237,14 +234,14 @@ class FOpsBuilder {
         addr_out,
         addr_aux,
       ]);
-      if (this.instruction_counter == 336) {
-        throw Error("secnod", a);
-      }
+      // if (this.instruction_counter == 336) {
+      //   throw Error("secnod", a);
+      // }
       this.instruction_counter++;
     }
     this.address_counter++;
-    this.trace[addr_aux] = ["cmovAux", c, a, b]; // should be c*a + b
-    this.trace[addr_out] = ["cmov", c, a, b]; // should be c * a + (1-c) * b
+    this.trace.set(addr_aux, ["cmovAux", c, a, b]); // should be c*a + b
+    this.trace.set(addr_out, ["cmov", c, a, b]); // should be c * a + (1-c) * b
     return addr_out;
   }
 
