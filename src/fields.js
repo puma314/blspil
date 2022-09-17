@@ -44,6 +44,7 @@ class F1 {
     this.one = this.I.constant(1);
     this.zero = this.I.constant(0);
     this.FBase = this;
+    this.p = I.field_modulus;
   }
 
   add(a, b) {
@@ -128,6 +129,10 @@ class F2 {
 
   sub(a, b) {
     return [this.F.sub(a[0], b[0]), this.F.sub(a[1], b[1])];
+  }
+
+  conjugate(a) {
+    return [a[0], this.F.neg(a[1])];
   }
 
   neg(a) {

@@ -5,6 +5,7 @@ const path = require("path");
 const assert = require("chai").assert;
 
 describe("BLS", function () {
+  /*
   it("compute pairing", async function () {
     const g1 = [
       3685416753713387016781088315183077757961620795782546409894578378688607592378376318836054947676345821548104185464507n,
@@ -40,5 +41,22 @@ describe("BLS", function () {
     for (var i = 0; i < 12; i++) {
       assert(g12[i] == expectedg12[i]);
     }
+  });
+*/
+  it("should test pairing identity", async function() {
+    const engine = new Engine(instructions);
+    const g1 = engine.G1.g;
+    const g2 = engine.G2.g;
+    const ng1 = engine.G1.neg(g1);
+    const ng2 = engine.G2.neg(g2);
+
+    let P = engine.pairing(g1, g2);
+    P = engine.F12.conjugate(P);
+
+    let Q = engine.pairing(ng1, g2);
+    let R = engine.pairing(g1, ng2);
+
+    engine.F12.assertEqual(P, Q);
+    engine.F12.assertEqual(Q, R);
   });
 });

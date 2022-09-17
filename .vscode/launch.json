@@ -19,6 +19,14 @@
       "skipFiles": ["<node_internals>/**"],
       "program": "${workspaceFolder}/node_modules/mocha/bin/_mocha",
       "args": ["${workspaceFolder}/test/field.test.js"]
+    },
+    {
+      "type": "pwa-node",
+      "request": "launch",
+      "name": "Test Pairings",
+      "skipFiles": ["<node_internals>/**"],
+      "program": "${workspaceFolder}/node_modules/mocha/bin/_mocha",
+      "args": ["${workspaceFolder}/test/pairings.test.js"]
     }
   ]
 }
