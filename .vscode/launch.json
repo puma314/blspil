@@ -8,62 +8,49 @@
       "type": "pwa-node",
       "request": "launch",
       "name": "Test Pairing",
-      "skipFiles": [
-        "<node_internals>/**"
-      ],
+      "skipFiles": ["<node_internals>/**"],
       "program": "${workspaceFolder}/node_modules/mocha/bin/_mocha",
-      "args": [
-        "${workspaceFolder}/test/pairings.test.js"
-      ]
+      "args": ["${workspaceFolder}/test/pairings.test.js"]
     },
     {
       "type": "pwa-node",
       "request": "launch",
       "name": "Test Fields",
-      "skipFiles": [
-        "<node_internals>/**"
-      ],
+      "skipFiles": ["<node_internals>/**"],
       "program": "${workspaceFolder}/node_modules/mocha/bin/_mocha",
-      "args": [
-        "${workspaceFolder}/test/field.test.js"
-      ]
+      "args": ["${workspaceFolder}/test/field.test.js"]
     },
     {
       "type": "pwa-node",
       "request": "launch",
       "name": "Test Curve",
-      "skipFiles": [
-        "<node_internals>/**"
-      ],
+      "skipFiles": ["<node_internals>/**"],
       "program": "${workspaceFolder}/node_modules/mocha/bin/_mocha",
-      "args": [
-        "${workspaceFolder}/test/curve.test.js"
-      ]
+      "args": ["${workspaceFolder}/test/curve.test.js"]
     },
     {
       "type": "pwa-node",
       "request": "launch",
       "name": "Test arith",
-      "skipFiles": [
-        "<node_internals>/**"
-      ],
+      "skipFiles": ["<node_internals>/**"],
       "program": "${workspaceFolder}/node_modules/mocha/bin/_mocha",
-      "args": [
-        "${workspaceFolder}/test/sm_arith384.js"
-      ]
-    }
-    ,
+      "args": ["${workspaceFolder}/test/sm_arith384.js"]
+    },
     {
       "type": "pwa-node",
       "request": "launch",
       "name": "Test pil",
-      "skipFiles": [
-        "<node_internals>/**"
-      ],
+      "skipFiles": ["<node_internals>/**"],
       "program": "${workspaceFolder}/node_modules/mocha/bin/_mocha",
-      "args": [
-        "${workspaceFolder}/test/pil.test.js"
-      ]
+      "args": ["${workspaceFolder}/test/pil.test.js"]
+    },
+    {
+      "type": "pwa-node",
+      "request": "launch",
+      "name": "Test instruction_build",
+      "skipFiles": ["<node_internals>/**"],
+      "program": "${workspaceFolder}/node_modules/mocha/bin/_mocha",
+      "args": ["${workspaceFolder}/test/instructions_build.test.js"]
     }
   ]
 }

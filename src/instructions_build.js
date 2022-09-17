@@ -14,6 +14,7 @@ class FOpsBuilder {
     this.zero = this.constant(0n);
     this.one = this.constant(1n);
     this.neg_one = this.constant(this.field_modulus - 1n);
+    this.trace = new Map();
   }
 
   curve_order =
@@ -54,6 +55,7 @@ class FOpsBuilder {
       this.instruction_counter++;
     }
     this.address_counter++;
+    this.trace[addr] = ["mul", a, b];
     return addr;
   }
 
@@ -67,32 +69,33 @@ class FOpsBuilder {
       this.instruction_counter++;
     }
     this.address_counter++;
+    this.trace[addr] = ["inv", a];
     return addr;
   }
 
   isZero(a) {
     // isZero has 2 steps
-    const addr_out1 = this.address_counter;
+    const addr_inter = this.address_counter;
     this.address_counter++;
     // Fill this with a variable during execution
-    const addr_inter = this.address_counter;
+    const addr_out = this.address_counter;
     this.address_counter++;
     for (var i = 0; i < 48; i++) {
       this.pA[this.instruction_counter] = a;
       this.pB[this.instruction_counter] = addr_inter;
       this.pC[this.instruction_counter] = this.one;
-      this.pD[this.instruction_counter] = addr_out1;
+      this.pD[this.instruction_counter] = addr_out;
       this.instruction_counter++;
     }
-    const addr_out = this.address_counter;
     for (var i = 0; i < 48; i++) {
       this.pA[this.instruction_counter] = a;
-      this.pB[this.instruction_counter] = addr_out1;
+      this.pB[this.instruction_counter] = addr_out;
       this.pC[this.instruction_counter] = this.zero;
       this.pD[this.instruction_counter] = this.zero;
       this.instruction_counter++;
     }
-    this.address_counter++;
+    this.trace[addr_inter] = ["isZeroAux", a]; // If val_a = 0, then 0, else -1/a
+    this.trace[addr_out] = ["isZero", a];
     return addr_out;
   }
 
@@ -115,6 +118,7 @@ class FOpsBuilder {
       this.pD[this.instruction_counter] = addr;
       this.instruction_counter++;
     }
+    this.trace[addr] = ["add", a, b];
     this.address_counter++;
     return addr;
   }
@@ -128,6 +132,7 @@ class FOpsBuilder {
       this.pD[this.instruction_counter] = addr;
       this.instruction_counter++;
     }
+    this.trace[addr] = ["sub", a, b];
     this.address_counter++;
     return addr;
   }
@@ -156,6 +161,8 @@ class FOpsBuilder {
       this.instruction_counter++;
     }
     this.address_counter++;
+    this.trace[addr_aux] = ["cmovAux", c, a, b]; // should be c*a + b
+    this.trace[addr_out] = ["cmov", c, a, b]; // should be c * a + (1-c) * b
     return addr_out;
   }
 
