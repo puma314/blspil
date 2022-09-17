@@ -72,8 +72,22 @@ const executeArith = async function (pols, instructionMapping) {
     const inv = FOps.inv(0xffffffff00000001n); // This is the goldilocks prime
     const dValue = FOps.mul(FOps.sub(FOps.add(FOps.mul(a, b), c), d), inv);
     populateArith(pols.Arith384.d, dValue, counter);
-    populateArithCarry(pols.Arith384.carry, 0n, counter);
+
   });
+  for (let j = 0; j < 24; j++) {
+    for (let i = instructionMapping.size; i < pols.Arith384.a[j].length; i++) {
+      pols.Arith384.a[j][i] = 0n;
+      pols.Arith384.b[j][i] = 0n;
+      pols.Arith384.c[j][i] = 0n;
+      pols.Arith384.d[j][i] = 0n;
+      pols.Arith384.e[j][i] = 0n;
+    }
+  }
+
+  for (let i = 0; i < pols.Arith384.carry.length; i++) {
+    pols.Arith384.carry[i] = 0n;
+  }
+
   console.log("End of execute arith");
 };
 
@@ -179,7 +193,7 @@ initialize = async function (pols) {
 
 initializeCommit = async function (pols) {
   for (let j = 0; j < 8; j++) {
-    for (let i = 0; i < pols.ramVal.length; i++) {
+    for (let i = 0; i < pols.ramVal[j].length; i++) {
       pols.ramVal[j][i] = 0n;
     }
   }
@@ -267,13 +281,6 @@ describe("test instructions_build", async function () {
     await executeArith(cmPols, instructions.instructionMapping);
     console.log("Done");
 
-    for (var i = 0; i < 8; i++) {
-      cmPols.main.ramVal[i].map((x, i) => {
-        if (typeof x != "bigint") {
-          throw Error(`ramVal ${(x, i)}`);
-        }
-      });
-    }
 
     const res = await verifyPil(Fr, pil, cmPols, constPols);
     if (res.length != 0) {
