@@ -1,12 +1,7 @@
 constant %N = 2**16;
 
 include "arith.pil";
-
-namespace Global(%N);
-    pol constant L1;    // 1, 0, 0, 0, 0,
-    pol constant BYTE;
-    pol constant BYTE2;
-
+include "global.pil";
 
 namespace main(%N);
 
