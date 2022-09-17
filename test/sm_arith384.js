@@ -13,81 +13,81 @@ const { newConstantPolsArray, newCommitPolsArray, compile, verifyPil, F } = requ
 
 const input = [
     {
-        a: 10n,
-        b: 20n,
-        c: 0n,
-        d: 0n,
-        e: 200n
+        x1: 10n,
+        x2: 20n,
+        y1: 0n,
+        y2: 0n,
+        y3: 200n
     },
     {
-        a: 0x1a0111ea397fe69a4b1ba7b6434bacd764774b84f38512bf6730d2a0f6b0f6241eabfffeb153ffffb9feffffffffaaabn - 1n,
-        b: 1n,
-        c: 0n,
-        d: 0n,
-        e: 0x1a0111ea397fe69a4b1ba7b6434bacd764774b84f38512bf6730d2a0f6b0f6241eabfffeb153ffffb9feffffffffaaabn - 1n
+        x1: 0x1a0111ea397fe69a4b1ba7b6434bacd764774b84f38512bf6730d2a0f6b0f6241eabfffeb153ffffb9feffffffffaaabn - 1n,
+        x2: 1n,
+        y1: 0n,
+        y2: 0n,
+        y3: 0x1a0111ea397fe69a4b1ba7b6434bacd764774b84f38512bf6730d2a0f6b0f6241eabfffeb153ffffb9feffffffffaaabn - 1n
     },
     {
-        a: 0x1a0111ea397fe69a4b1ba7b6434bacd764774b84f38512bf6730d2a0f6b0f6241eabfffeb153ffffb9feffffffffaaabn - 1n,
-        b: 1n,
-        c: 1n,
-        d: 1n,
-        e: 0n
+        x1: 0x1a0111ea397fe69a4b1ba7b6434bacd764774b84f38512bf6730d2a0f6b0f6241eabfffeb153ffffb9feffffffffaaabn - 1n,
+        x2: 1n,
+        y1: 1n,
+        y2: 1n,
+        y3: 0n
     },
     {
-        a: 0x1a0111ea397fe69a4b1ba7b6434bacd764774b84f38512bf6730d2a0f6b0f6241eabfffeb153ffffb9feffffffffaaabn,
-        b: 16n,
-        c: 0n,
-        d: 16n,
-        e: 0n
+        x1: 0x1a0111ea397fe69a4b1ba7b6434bacd764774b84f38512bf6730d2a0f6b0f6241eabfffeb153ffffb9feffffffffaaabn,
+        x2: 16n,
+        y1: 0n,
+        y2: 16n,
+        y3: 0n
     },
     {
-        a: 0x1a0111ea397fe69a4b1ba7b6434bacd764774b84f38512bf6730d2a0f6b0f6241eabfffeb153ffffb9feffffffffaaabn,
-        b: 2n,
-        c: 10n,
-        d: 2n,
-        e: 10n
+        x1: 0x1a0111ea397fe69a4b1ba7b6434bacd764774b84f38512bf6730d2a0f6b0f6241eabfffeb153ffffb9feffffffffaaabn,
+        x2: 2n,
+        y1: 10n,
+        y2: 2n,
+        y3: 10n
     },
     {
-        a: 0x1a0111ea397fe69a4b1ba7b6434bacd764774b84f38512bf6730d2a0f6b0f6241eabfffeb153ffffb9feffffffffaaabn,
-        b: 0x1a0111ea397fe69a4b1ba7b6434bacd764774b84f38512bf6730d2a0f6b0f6241eabfffeb153ffffb9feffffffffaaabn,
-        c: 0x1a0111ea397fe69a4b1ba7b6434bacd764774b84f38512bf6730d2a0f6b0f6241eabfffeb153ffffb9feffffffffaaabn - 1n,
-        d: 0x1a0111ea397fe69a4b1ba7b6434bacd764774b84f38512bf6730d2a0f6b0f6241eabfffeb153ffffb9feffffffffaaabn,
-        e: 0x1a0111ea397fe69a4b1ba7b6434bacd764774b84f38512bf6730d2a0f6b0f6241eabfffeb153ffffb9feffffffffaaabn - 1n
+        x1: 0x1a0111ea397fe69a4b1ba7b6434bacd764774b84f38512bf6730d2a0f6b0f6241eabfffeb153ffffb9feffffffffaaabn,
+        x2: 0x1a0111ea397fe69a4b1ba7b6434bacd764774b84f38512bf6730d2a0f6b0f6241eabfffeb153ffffb9feffffffffaaabn,
+        y1: 0x1a0111ea397fe69a4b1ba7b6434bacd764774b84f38512bf6730d2a0f6b0f6241eabfffeb153ffffb9feffffffffaaabn - 1n,
+        y2: 0x1a0111ea397fe69a4b1ba7b6434bacd764774b84f38512bf6730d2a0f6b0f6241eabfffeb153ffffb9feffffffffaaabn,
+        y3: 0x1a0111ea397fe69a4b1ba7b6434bacd764774b84f38512bf6730d2a0f6b0f6241eabfffeb153ffffb9feffffffffaaabn - 1n
     },
     {
-        a: 3n,
-        b: 2n,
-        c: 1n,
-        d: 0n,
-        e: 7n
+        x1: 3n,
+        x2: 2n,
+        y1: 1n,
+        y2: 0n,
+        y3: 7n
     },
     {
-        a: 0x1a0111ea397fe69a4b1ba7b6434bacd764774b84f38512bf6730d2a0f6b0f6241eabfffeb153ffffb9feffffffffaaabn,
-        b: 0x1a0111ea397fe69a4b1ba7b6434bacd764774b84f38512bf6730d2a0f6b0f6241eabfffeb153ffffb9feffffffffaaabn,
-        c: 0n,
-        d: 0x1a0111ea397fe69a4b1ba7b6434bacd764774b84f38512bf6730d2a0f6b0f6241eabfffeb153ffffb9feffffffffaaabn,
-        e: 0n
+        x1: 0x1a0111ea397fe69a4b1ba7b6434bacd764774b84f38512bf6730d2a0f6b0f6241eabfffeb153ffffb9feffffffffaaabn,
+        x2: 0x1a0111ea397fe69a4b1ba7b6434bacd764774b84f38512bf6730d2a0f6b0f6241eabfffeb153ffffb9feffffffffaaabn,
+        y1: 0n,
+        y2: 0x1a0111ea397fe69a4b1ba7b6434bacd764774b84f38512bf6730d2a0f6b0f6241eabfffeb153ffffb9feffffffffaaabn,
+        y3: 0n
     },
     {
-        a: 0x1a0111ea397fe69a4b1ba7b6434bacd764774b84f38512bf6730d2a0f6b0f6241eabfffeb153ffffb9feffffffffaaabn,
-        b: 0n,
-        c: 0n,
-        d: 0n,
-        e: 0n
+        x1: 0x1a0111ea397fe69a4b1ba7b6434bacd764774b84f38512bf6730d2a0f6b0f6241eabfffeb153ffffb9feffffffffaaabn,
+        x2: 0n,
+        y1: 0n,
+        y2: 0n,
+        y3: 0n
     },
     {
-        a: 0x1a0111ea397fe69a4b1ba7b6434bacd764774b84f38512bf6730d2a0f6b0f6241eabfffeb153ffffb9feffffffffaaabn,
-        b: 1n,
-        c: 0x1a0111ea397fe69a4b1ba7b6434bacd764774b84f38512bf6730d2a0f6b0f6241eabfffeb153ffffb9feffffffffaaabn,
-        d: 2n,
-        e: 0n
+        x1: 0x1a0111ea397fe69a4b1ba7b6434bacd764774b84f38512bf6730d2a0f6b0f6241eabfffeb153ffffb9feffffffffaaabn,
+        x2: 1n,
+        y1: 0x1a0111ea397fe69a4b1ba7b6434bacd764774b84f38512bf6730d2a0f6b0f6241eabfffeb153ffffb9feffffffffaaabn,
+        y2: 2n,
+        y3: 0n
     },
     {
-        a: 0x043e1af3a114d443e599a6ebe8669556ef0f138eb0088857845c2d451103293e4c6b9cce62966bf426c29ab4309281dbn,
-        b: 0x0a305f5539d351077b709194644ce85a1f2ceec42bcfb0258cb7a25dc818e03310197d057ab3891db238769e0d65f636n,
-        c: 0x09fb66d0fd96a5f718dc560f9efaa98156d8cb6dc39b9704ad7480f6320038ad5e2d2c08da0fa302aa101f54fabf0ac7n,
-        d: 0x01a98ec1e2089aea313e6a8db0a018e7f24e91316f96cd4666d17302709501762642ab56a4ea2afeb2239473fd932058n,
-        e: 0x042209281ee763d6dd2d0ee547bf89fa4817b8bc868e908c7f72c0f3d97a5f1fe9f2ad235a9633455df66748686cd631n
+        x1: 0x043e1af3a114d443e599a6ebe8669556ef0f138eb0088857845c2d451103293e4c6b9cce62966bf426c29ab4309281dbn,
+        x2: 0x0a305f5539d351077b709194644ce85a1f2ceec42bcfb0258cb7a25dc818e03310197d057ab3891db238769e0d65f636n,
+        y1: 0x09fb66d0fd96a5f718dc560f9efaa98156d8cb6dc39b9704ad7480f6320038ad5e2d2c08da0fa302aa101f54fabf0ac7n,
+        y2: 0x01a98ec1e2089aea313e6a8db0a018e7f24e91316f96cd4666d17302709501762642ab56a4ea2afeb2239473fd932058n,
+        y3: 0x042209281ee763d6dd2d0ee547bf89fa4817b8bc868e908c7f72c0f3d97a5f1fe9f2ad235a9633455df66748686cd631n
     }
 ];
 
