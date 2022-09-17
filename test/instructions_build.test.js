@@ -42,28 +42,6 @@ execute = async function (pols, input) {
   const Fr = new F1Field(0xffffffff00000001n);
   const chunks = 24;
   const steps = chunks * 2;
-
-  // Split the input in little-endian bytes
-  prepareInput256bits(input, N, chunks);
-
-  for (let i = 0; i < input.length; i++) {
-    let offset = i * steps;
-    for (let step = 0; step < steps; ++step) {
-      for (let j = 0; j < chunks; j++) {
-        pols.a[j][offset + step] = BigInt(input[i]["_a"][j]);
-        pols.b[j][offset + step] = BigInt(input[i]["_b"][j]);
-        pols.c[j][offset + step] = BigInt(input[i]["_c"][j]);
-        pols.d[j][offset + step] = BigInt(input[i]["_d"][j]);
-        pols.e[j][offset + step] = BigInt(input[i]["_e"][j]);
-      }
-    }
-    let carry = 0n;
-    for (let step = 0; step < steps; ++step) {
-      const value = pilHelper.calculate(pols, step, offset);
-      pols.carry[offset + step] = Fr.e(carry);
-      carry = (value + carry) / 2n ** 16n;
-    }
-  }
 };
 
 describe("test instructions_build", async function () {
