@@ -15,6 +15,7 @@ class FOpsBuilder {
     this.one = this.constant(1n);
     this.neg_one = this.constant(this.field_modulus - 1n);
     this.trace = new Map();
+    this.instructionMapping = new Map();
   }
 
   curve_order =
@@ -52,6 +53,15 @@ class FOpsBuilder {
       this.pB[this.instruction_counter] = b;
       this.pC[this.instruction_counter] = this.zero;
       this.pD[this.instruction_counter] = addr;
+      this.instructionMapping.set(this.instruction_counter, [
+        a,
+        b,
+        "zero",
+        addr,
+      ]);
+      if (this.instruction_counter == 336) {
+        throw Error(a, b);
+      }
       this.instruction_counter++;
     }
     this.address_counter++;
@@ -66,6 +76,15 @@ class FOpsBuilder {
       this.pB[this.instruction_counter] = addr;
       this.pC[this.instruction_counter] = this.zero;
       this.pD[this.instruction_counter] = this.zero;
+      this.instructionMapping.set(this.instruction_counter, [
+        a,
+        addr,
+        "zero",
+        "zero",
+      ]);
+      if (this.instruction_counter == 336) {
+        throw Error(a);
+      }
       this.instruction_counter++;
     }
     this.address_counter++;
@@ -85,6 +104,15 @@ class FOpsBuilder {
       this.pB[this.instruction_counter] = addr_inter;
       this.pC[this.instruction_counter] = this.one;
       this.pD[this.instruction_counter] = addr_out;
+      this.instructionMapping.set(this.instruction_counter, [
+        a,
+        addr_inter,
+        "one",
+        addr_out,
+      ]);
+      if (this.instruction_counter == 336) {
+        throw Error(a);
+      }
       this.instruction_counter++;
     }
     for (var i = 0; i < 48; i++) {
@@ -92,6 +120,15 @@ class FOpsBuilder {
       this.pB[this.instruction_counter] = addr_out;
       this.pC[this.instruction_counter] = this.zero;
       this.pD[this.instruction_counter] = this.zero;
+      this.instructionMapping.set(this.instruction_counter, [
+        a,
+        addr_out,
+        "zero",
+        "zero",
+      ]);
+      if (this.instruction_counter == 336) {
+        throw Error(a);
+      }
       this.instruction_counter++;
     }
     this.trace[addr_inter] = ["isZeroAux", a]; // If val_a = 0, then 0, else -1/a
@@ -105,6 +142,15 @@ class FOpsBuilder {
       this.pB[this.instruction_counter] = this.one;
       this.pC[this.instruction_counter] = this.zero;
       this.pD[this.instruction_counter] = b;
+      this.instructionMapping.set(this.instruction_counter, [
+        a,
+        "one",
+        "zero",
+        b,
+      ]);
+      if (this.instruction_counter == 336) {
+        throw Error(a);
+      }
       this.instruction_counter++;
     }
   }
@@ -116,6 +162,15 @@ class FOpsBuilder {
       this.pB[this.instruction_counter] = this.one;
       this.pC[this.instruction_counter] = b;
       this.pD[this.instruction_counter] = addr;
+      this.instructionMapping.set(this.instruction_counter, [
+        a,
+        "one",
+        b,
+        addr,
+      ]);
+      if (this.instruction_counter == 336) {
+        throw Error(a);
+      }
       this.instruction_counter++;
     }
     this.trace[addr] = ["add", a, b];
@@ -130,6 +185,15 @@ class FOpsBuilder {
       this.pB[this.instruction_counter] = b;
       this.pC[this.instruction_counter] = a;
       this.pD[this.instruction_counter] = addr;
+      this.instructionMapping.set(this.instruction_counter, [
+        "neg_one",
+        b,
+        a,
+        addr,
+      ]);
+      if (this.instruction_counter == 336) {
+        throw Error(a);
+      }
       this.instruction_counter++;
     }
     this.trace[addr] = ["sub", a, b];
@@ -149,6 +213,15 @@ class FOpsBuilder {
       this.pB[this.instruction_counter] = a;
       this.pC[this.instruction_counter] = b;
       this.pD[this.instruction_counter] = addr_aux;
+      this.instructionMapping.set(this.instruction_counter, [
+        c,
+        a,
+        b,
+        addr_aux,
+      ]);
+      if (this.instruction_counter == 336) {
+        throw Error("first", a);
+      }
       this.instruction_counter++;
     }
     this.address_counter++;
@@ -158,6 +231,15 @@ class FOpsBuilder {
       this.pB[this.instruction_counter] = b;
       this.pC[this.instruction_counter] = addr_out;
       this.pD[this.instruction_counter] = addr_aux;
+      this.instructionMapping.set(this.instruction_counter, [
+        c,
+        b,
+        addr_out,
+        addr_aux,
+      ]);
+      if (this.instruction_counter == 336) {
+        throw Error("secnod", a);
+      }
       this.instruction_counter++;
     }
     this.address_counter++;
