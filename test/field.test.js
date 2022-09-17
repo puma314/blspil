@@ -397,6 +397,49 @@ describe("BLS Field", function () {
         }
         engine.F12.eq(c, cExp);
     });
+    it("should mul in F12 2", async function () {
+        const a = [[[0n, 0n], [0n, 0n], [0n, 1n]], [[1n, 0n], [0n, 0n], [0n, 0n]]];
+        const b = [[[2n, 3n], [4n, 5n], [6n, 7n]], [[8n, 9n], [10n, 11n], [12n, 13n]]];
+        const c  = engine.F12.mul(a, a);
+        const cExp = [
+            [
+                [
+                    0n,
+                    0n
+                ],
+                [
+                    0n,
+                    0x1a0111ea397fe69a4b1ba7b6434bacd764774b84f38512bf6730d2a0f6b0f6241eabfffeb153ffffb9feffffffffaaaan
+                ],
+                [
+                    0n,
+                    0n
+                ]
+            ],
+            [
+                [
+                    0n,
+                    0n
+                ],
+                [
+                    0n,
+                    0n
+                ],
+                [
+                    0n,
+                    2n
+                ]
+            ]
+        ];
+        for (let i=0; i<2; i++) {
+            for (let j=0; j<3; j++) {
+                for (let k=0; k<2; k++) {
+                    assert(c[i][j][k] == cExp[i][j][k]);
+                }
+            }
+        }
+        engine.F12.eq(c, cExp);
+    });
     it("should exp in F12", async function () {
         const a = [[[4n, 5n], [6n, 7n], [8n, 9n]], [[10n, 11n], [12n, 13n], [14n, 15n]]];
         const b = 5n;

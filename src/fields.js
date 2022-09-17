@@ -1,3 +1,5 @@
+const { assert } = require("chai");
+
 function bits(s) {
   let E = BigInt(s);
   const res = [];
