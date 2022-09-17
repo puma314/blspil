@@ -1,11 +1,11 @@
 const {assert,expect} = require("chai");
 const fs = require("fs");
-const pilTools = require(__dirname + '/../tools/pilTools.js');
+const pilTools = require(__dirname + '/../../../tools/arith/pilTools.js');
 
 const F1Field = require("ffjavascript").F1Field;
-const outPilFile = __dirname + '/../pil/arith384.pil';
-const outPilHelperFile = __dirname + '/../src/arith384.js';
-const pilTemplateFile = __dirname + "/../pil/arith/arith384.ejs.pil";
+const outPilFile = __dirname + '/../../../build/arith384.pil';
+const outPilHelperFile = __dirname + '/../../../build/arith384.js';
+const pilTemplateFile = __dirname + "/arith384.ejs.pil";
 let pilHelper;
 
 const { newConstantPolsArray, newCommitPolsArray, compile, verifyPil, F } = require("pilcom");
@@ -168,7 +168,7 @@ describe("test plookup operations", async function () {
         const pilTemplate = fs.readFileSync(pilTemplateFile, {encoding:'utf8', flag:'r'});
         const pilCode = pilTools.generatePilFromTemplate(pilTemplate);
         fs.writeFileSync(outPilFile, pilCode);
-        pil = await compile(Fr, outPilFile);
+        pil = await compile(Fr, outPilFile, null, {defines: { N: 2 ** 21 }});
         pilTools.generatePilHelpers(pilTemplateFile, outPilHelperFile);
         pilHelper = require(outPilHelperFile);
 
