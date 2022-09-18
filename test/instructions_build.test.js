@@ -106,7 +106,7 @@ execute = async function (pols, inputs, trace, constPols) {
     if (constPols.main.isConstant[i] == 1n) {
       let res = 0n;
       for (var j = 0; j < 8; j++) {
-        const add = constPols.main.ConstVal[j][i] << (48n * BigInt(i));
+        const add = constPols.main.ConstVal[j][i] << (48n * BigInt(j));
         res += add;
       }
       storeToRamAddr(res, i, pols);
