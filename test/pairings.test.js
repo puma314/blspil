@@ -4,7 +4,7 @@ const Engine = require("../src/engine");
 const path = require("path");
 const assert = require("chai").assert;
 
-describe("BLS", function () {
+describe("BLS Pairing", function () {
   this.timeout(10000000);
   /*
   it("compute pairing", async function () {
@@ -66,6 +66,8 @@ describe("BLS", function () {
     const g2 = engine.G2.g;
     const ng1 = engine.G1.neg(g1);
 
+    instructions.cnt = 0;
     engine.pairingEquationCheck(g1, g2, ng1, g2);
+    console.log("Cross prime field constraints: ", instructions.cnt);
   });
 });
