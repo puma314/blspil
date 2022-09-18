@@ -828,7 +828,8 @@ namespace Arith384(2**16);
 	pol eq_47 =
 		0;
 
-    pol eq = eq_0*CLK[0] + eq_1*CLK[1] + eq_2*CLK[2] + eq_3*CLK[3] + eq_4*CLK[4] + eq_5*CLK[5] + eq_6*CLK[6] + eq_7*CLK[7]
+
+	pol eq = eq_0*CLK[0] + eq_1*CLK[1] + eq_2*CLK[2] + eq_3*CLK[3] + eq_4*CLK[4] + eq_5*CLK[5] + eq_6*CLK[6] + eq_7*CLK[7]
 	   + eq_8*CLK[8] + eq_9*CLK[9] + eq_10*CLK[10] + eq_11*CLK[11] + eq_12*CLK[12] + eq_13*CLK[13] + eq_14*CLK[14] + eq_15*CLK[15]
 	   + eq_16*CLK[16] + eq_17*CLK[17] + eq_18*CLK[18] + eq_19*CLK[19] + eq_20*CLK[20] + eq_21*CLK[21] + eq_22*CLK[22] + eq_23*CLK[23]
 	   + eq_24*CLK[24] + eq_25*CLK[25] + eq_26*CLK[26] + eq_27*CLK[27] + eq_28*CLK[28] + eq_29*CLK[29] + eq_30*CLK[30] + eq_31*CLK[31]
@@ -837,6 +838,8 @@ namespace Arith384(2**16);
 
     pol commit carry;
 
-    eq + carry = carry' * 2**16;
+	// TODO fix carry
+    // eq + carry = carry' * 2**16;
+	eq * carry = 0;  // REMOVE 
 
     // NOTE: non complete PIL, missing implement carry range check

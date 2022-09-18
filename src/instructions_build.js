@@ -1,14 +1,14 @@
 class FOpsBuilder {
-  constructor(pols) {
+  constructor(pols, numInputs) {
     this.pols = pols;
     this.pA = pols.main.pA;
     this.pB = pols.main.pB;
     this.pC = pols.main.pC;
-    this.pD = pols.main.pD;
+    this.pE = pols.main.pE;
     this.isConstant = pols.main.isConstant;
     this.ConstVal = pols.main.ConstVal;
     this.instruction_counter = 0;
-    this.address_counter = 0;
+    this.address_counter = numInputs;
     this.constant_counter = this.pA.length - 1;
     this.constant_mapping = new Map();
     this.zero = this.constant(0n);
@@ -52,7 +52,7 @@ class FOpsBuilder {
       this.pA[this.instruction_counter] = BigInt(a);
       this.pB[this.instruction_counter] = BigInt(b);
       this.pC[this.instruction_counter] = BigInt(this.zero);
-      this.pD[this.instruction_counter] = BigInt(addr);
+      this.pE[this.instruction_counter] = BigInt(addr);
       this.instructionMapping.set(this.instruction_counter, [
         a,
         b,
@@ -75,7 +75,7 @@ class FOpsBuilder {
       this.pA[this.instruction_counter] = BigInt(a);
       this.pB[this.instruction_counter] = BigInt(addr);
       this.pC[this.instruction_counter] = BigInt(this.zero);
-      this.pD[this.instruction_counter] = BigInt(this.zero);
+      this.pE[this.instruction_counter] = BigInt(this.zero);
       this.instructionMapping.set(this.instruction_counter, [
         a,
         addr,
@@ -103,7 +103,7 @@ class FOpsBuilder {
       this.pA[this.instruction_counter] = BigInt(a);
       this.pB[this.instruction_counter] = BigInt(addr_inter);
       this.pC[this.instruction_counter] = BigInt(this.one);
-      this.pD[this.instruction_counter] = BigInt(addr_out);
+      this.pE[this.instruction_counter] = BigInt(addr_out);
       this.instructionMapping.set(this.instruction_counter, [
         a,
         addr_inter,
@@ -119,7 +119,7 @@ class FOpsBuilder {
       this.pA[this.instruction_counter] = BigInt(a);
       this.pB[this.instruction_counter] = BigInt(addr_out);
       this.pC[this.instruction_counter] = BigInt(this.zero);
-      this.pD[this.instruction_counter] = BigInt(this.zero);
+      this.pE[this.instruction_counter] = BigInt(this.zero);
       this.instructionMapping.set(this.instruction_counter, [
         a,
         addr_out,
@@ -141,7 +141,7 @@ class FOpsBuilder {
       this.pA[this.instruction_counter] = BigInt(a);
       this.pB[this.instruction_counter] = BigInt(this.one);
       this.pC[this.instruction_counter] = BigInt(this.zero);
-      this.pD[this.instruction_counter] = BigInt(b);
+      this.pE[this.instruction_counter] = BigInt(b);
       this.instructionMapping.set(this.instruction_counter, [
         a,
         "one",
@@ -161,7 +161,7 @@ class FOpsBuilder {
       this.pA[this.instruction_counter] = BigInt(a);
       this.pB[this.instruction_counter] = BigInt(this.one);
       this.pC[this.instruction_counter] = BigInt(b);
-      this.pD[this.instruction_counter] = BigInt(addr);
+      this.pE[this.instruction_counter] = BigInt(addr);
       this.instructionMapping.set(this.instruction_counter, [
         a,
         "one",
@@ -184,7 +184,7 @@ class FOpsBuilder {
       this.pA[this.instruction_counter] = BigInt(this.neg_one);
       this.pB[this.instruction_counter] = BigInt(b);
       this.pC[this.instruction_counter] = BigInt(a);
-      this.pD[this.instruction_counter] = BigInt(addr);
+      this.pE[this.instruction_counter] = BigInt(addr);
       this.instructionMapping.set(this.instruction_counter, [
         "neg_one",
         b,
@@ -212,7 +212,7 @@ class FOpsBuilder {
       this.pA[this.instruction_counter] = BigInt(c);
       this.pB[this.instruction_counter] = BigInt(a);
       this.pC[this.instruction_counter] = BigInt(b);
-      this.pD[this.instruction_counter] = BigInt(addr_aux);
+      this.pE[this.instruction_counter] = BigInt(addr_aux);
       this.instructionMapping.set(this.instruction_counter, [
         c,
         a,
