@@ -48,7 +48,7 @@ function getAsBigInt(pols, addr_or_str) {
 function populateArith(pol, bigInt, counter) {
   for (let i = 0; i < 24; i++) {
     pol[i][counter] = BigInt(bigInt & 0xffffn);
-    bigInt >>= 4n; // 2**4 = 16
+    bigInt >>= 16n; // 2**4 = 16
   }
 }
 
@@ -63,16 +63,17 @@ const executeArith = async function (pols, instructionMapping) {
     const a = getAsBigInt(pols, vals[0]);
     const b = getAsBigInt(pols, vals[1]);
     const c = getAsBigInt(pols, vals[2]);
-    const d = getAsBigInt(pols, vals[3]);
+    const e = getAsBigInt(pols, vals[3]);
     populateArith(pols.Arith384.a, a, counter);
     populateArith(pols.Arith384.b, b, counter);
     populateArith(pols.Arith384.c, c, counter);
-    populateArith(pols.Arith384.e, d, counter);
+    populateArith(pols.Arith384.e, e, counter);
 
-    const inv = FOps.inv(0xffffffff00000001n); // This is the goldilocks prime
-    const dValue = FOps.mul(FOps.sub(FOps.add(FOps.mul(a, b), c), d), inv);
-    populateArith(pols.Arith384.d, dValue, counter);
-
+    const numerator = a * b + c - e;
+    const denom =
+      4002409555221667393417789825735904156556882819939007885332058136124031650490837864442687629129015664037894272559787n;
+    const dValue2 = numerator / denom;
+    populateArith(pols.Arith384.d, dValue2, counter);
   });
   for (let j = 0; j < 24; j++) {
     for (let i = instructionMapping.size; i < pols.Arith384.a[j].length; i++) {
@@ -175,11 +176,12 @@ execute = async function (pols, inputs, trace, constPols) {
 };
 
 initialize = async function (pols) {
+  const constZeroIndex = pols.main.pA.length - 1;
   for (let i = 0; i < pols.main.pA.length; i++) {
-    pols.main.pA[i] = 0n;
-    pols.main.pB[i] = 0n;
-    pols.main.pC[i] = 0n;
-    pols.main.pD[i] = 0n;
+    pols.main.pA[i] = constZeroIndex;
+    pols.main.pB[i] = constZeroIndex;
+    pols.main.pC[i] = constZeroIndex;
+    pols.main.pE[i] = constZeroIndex;
     pols.main.isConstant[i] = 0n;
     for (let k = 0; k < 8; k++) {
       pols.main.ConstVal[k][i] = 0n;
@@ -246,41 +248,27 @@ describe("test instructions_build", async function () {
     buidBYTE(constPols.Global.BYTE, constPols.Global.BYTE.length);
     buidBYTE2(constPols.Global.BYTE2, constPols.Global.BYTE.length);
     buildL1(constPols.Global.L1);
-    const instructions = new InstructionsBuilder(constPols);
+    const NUM_INPUTS = 2;
+    const instructions = new InstructionsBuilder(constPols, NUM_INPUTS);
     const engine = new Engine(instructions);
-    engine.G1.add([0n, 1n], [2n, 3n]);
-    // engine.G2.add(
-    //   [
-    //     [1n, 2n],
-    //     [3n, 4n],
-    //   ],
-    //   [
-    //     [5n, 6n],
-    //     [7n, 8n],
-    //   ]
-    // );
-    // post-processing loop
-
-    // TODO we can add this once we're done with pairing
-    // engine.pairing(
-    //   [0, 1],
-    //   [
-    //     [2, 3],
-    //     [4, 5],
-    //   ]
-    // );
+    const inA = 0n;
+    const out = 1n;
+    const k = engine.F1.isZero(inA);
+    engine.F1.assertEqual(k, out);
+    // engine.G1.add([0n, 1n], [2n, 3n]);
     const g1 = [
       3685416753713387016781088315183077757961620795782546409894578378688607592378376318836054947676345821548104185464507n,
       1339506544944476473020471379941921221584933875938349620426543736416511423956333506472724655353366534992391756441569n,
     ];
-    const input = [g1[0], g1[1], g1[0], g1[1]];
+    const two_g1 = [
+      838589206289216005799424730305866328161735431124665289961769162861615689790485775997575391185127590486775437397838n,
+      3450209970729243429733164009999191867485184320918914219895632678707687208996709678363578245114137957452475385814312n,
+    ];
+    const input = [2n, 0n];
     cmPols = newCommitPolsArray(pil);
     await initializeCommit(cmPols.main);
-    // console.log("body", cmPols.main);
     await execute(cmPols, input, instructions.trace, constPols);
     await executeArith(cmPols, instructions.instructionMapping);
-    console.log("Done");
-
 
     const res = await verifyPil(Fr, pil, cmPols, constPols);
     if (res.length != 0) {
