@@ -23,7 +23,7 @@ class FOpsBuilder {
   field_modulus =
     4002409555221667393417789825735904156556882819939007885332058136124031650490837864442687629129015664037894272559787n;
 
-  //   ramAddrToBigNum(addr) {
+  //   ramAddrToBigInt(addr) {
   //     res = BigInt(0);
   //     for (var i = 0; i < 8; i++) {
   //       res += this.pols.ramVal[i][addr] << (48n * BigInt(i));
@@ -49,46 +49,46 @@ class FOpsBuilder {
   mul(a, b) {
     const addr = this.address_counter;
     for (var i = 0; i < 48; i++) {
-      this.pA[this.instruction_counter] = a;
-      this.pB[this.instruction_counter] = b;
-      this.pC[this.instruction_counter] = this.zero;
-      this.pD[this.instruction_counter] = addr;
+      this.pA[this.instruction_counter] = BigInt(a);
+      this.pB[this.instruction_counter] = BigInt(b);
+      this.pC[this.instruction_counter] = BigInt(this.zero);
+      this.pD[this.instruction_counter] = BigInt(addr);
       this.instructionMapping.set(this.instruction_counter, [
         a,
         b,
         "zero",
         addr,
       ]);
-      if (this.instruction_counter == 336) {
-        throw Error(a, b);
-      }
+      // if (this.instruction_counter == 336) {
+      //   throw Error(a, b);
+      // }
       this.instruction_counter++;
     }
     this.address_counter++;
-    this.trace[addr] = ["mul", a, b];
+    this.trace.set(addr, ["mul", a, b]);
     return addr;
   }
 
   inv(a) {
     const addr = this.address_counter;
     for (var i = 0; i < 48; i++) {
-      this.pA[this.instruction_counter] = a;
-      this.pB[this.instruction_counter] = addr;
-      this.pC[this.instruction_counter] = this.zero;
-      this.pD[this.instruction_counter] = this.zero;
+      this.pA[this.instruction_counter] = BigInt(a);
+      this.pB[this.instruction_counter] = BigInt(addr);
+      this.pC[this.instruction_counter] = BigInt(this.zero);
+      this.pD[this.instruction_counter] = BigInt(this.zero);
       this.instructionMapping.set(this.instruction_counter, [
         a,
         addr,
         "zero",
         "zero",
       ]);
-      if (this.instruction_counter == 336) {
-        throw Error(a);
-      }
+      // if (this.instruction_counter == 336) {
+      //   throw Error(a);
+      // }
       this.instruction_counter++;
     }
     this.address_counter++;
-    this.trace[addr] = ["inv", a];
+    this.trace.set(addr, ["inv", a]);
     return addr;
   }
 
@@ -100,57 +100,57 @@ class FOpsBuilder {
     const addr_out = this.address_counter;
     this.address_counter++;
     for (var i = 0; i < 48; i++) {
-      this.pA[this.instruction_counter] = a;
-      this.pB[this.instruction_counter] = addr_inter;
-      this.pC[this.instruction_counter] = this.one;
-      this.pD[this.instruction_counter] = addr_out;
+      this.pA[this.instruction_counter] = BigInt(a);
+      this.pB[this.instruction_counter] = BigInt(addr_inter);
+      this.pC[this.instruction_counter] = BigInt(this.one);
+      this.pD[this.instruction_counter] = BigInt(addr_out);
       this.instructionMapping.set(this.instruction_counter, [
         a,
         addr_inter,
         "one",
         addr_out,
       ]);
-      if (this.instruction_counter == 336) {
-        throw Error(a);
-      }
+      // if (this.instruction_counter == 336) {
+      //   throw Error(a);
+      // }
       this.instruction_counter++;
     }
     for (var i = 0; i < 48; i++) {
-      this.pA[this.instruction_counter] = a;
-      this.pB[this.instruction_counter] = addr_out;
-      this.pC[this.instruction_counter] = this.zero;
-      this.pD[this.instruction_counter] = this.zero;
+      this.pA[this.instruction_counter] = BigInt(a);
+      this.pB[this.instruction_counter] = BigInt(addr_out);
+      this.pC[this.instruction_counter] = BigInt(this.zero);
+      this.pD[this.instruction_counter] = BigInt(this.zero);
       this.instructionMapping.set(this.instruction_counter, [
         a,
         addr_out,
         "zero",
         "zero",
       ]);
-      if (this.instruction_counter == 336) {
-        throw Error(a);
-      }
+      // if (this.instruction_counter == 336) {
+      //   throw Error(a);
+      // }
       this.instruction_counter++;
     }
-    this.trace[addr_inter] = ["isZeroAux", a]; // If val_a = 0, then 0, else -1/a
-    this.trace[addr_out] = ["isZero", a];
+    this.trace.set(addr_inter, ["isZeroAux", a]); // If val_a = 0, then 0, else -1/a
+    this.trace.set(addr_out, ["isZero", a]);
     return addr_out;
   }
 
   assertEqual(a, b) {
     for (var i = 0; i < 48; i++) {
-      this.pA[this.instruction_counter] = a;
-      this.pB[this.instruction_counter] = this.one;
-      this.pC[this.instruction_counter] = this.zero;
-      this.pD[this.instruction_counter] = b;
+      this.pA[this.instruction_counter] = BigInt(a);
+      this.pB[this.instruction_counter] = BigInt(this.one);
+      this.pC[this.instruction_counter] = BigInt(this.zero);
+      this.pD[this.instruction_counter] = BigInt(b);
       this.instructionMapping.set(this.instruction_counter, [
         a,
         "one",
         "zero",
         b,
       ]);
-      if (this.instruction_counter == 336) {
-        throw Error(a);
-      }
+      // if (this.instruction_counter == 336) {
+      //   throw Error(a);
+      // }
       this.instruction_counter++;
     }
   }
@@ -158,22 +158,22 @@ class FOpsBuilder {
   add(a, b) {
     const addr = this.address_counter;
     for (var i = 0; i < 48; i++) {
-      this.pA[this.instruction_counter] = a;
-      this.pB[this.instruction_counter] = this.one;
-      this.pC[this.instruction_counter] = b;
-      this.pD[this.instruction_counter] = addr;
+      this.pA[this.instruction_counter] = BigInt(a);
+      this.pB[this.instruction_counter] = BigInt(this.one);
+      this.pC[this.instruction_counter] = BigInt(b);
+      this.pD[this.instruction_counter] = BigInt(addr);
       this.instructionMapping.set(this.instruction_counter, [
         a,
         "one",
         b,
         addr,
       ]);
-      if (this.instruction_counter == 336) {
-        throw Error(a);
-      }
+      // if (this.instruction_counter == 336) {
+      //   throw Error(a);
+      // }
       this.instruction_counter++;
     }
-    this.trace[addr] = ["add", a, b];
+    this.trace.set(addr, ["add", a, b]);
     this.address_counter++;
     return addr;
   }
@@ -181,22 +181,22 @@ class FOpsBuilder {
   sub(a, b) {
     const addr = this.address_counter;
     for (var i = 0; i < 48; i++) {
-      this.pA[this.instruction_counter] = this.neg_one;
-      this.pB[this.instruction_counter] = b;
-      this.pC[this.instruction_counter] = a;
-      this.pD[this.instruction_counter] = addr;
+      this.pA[this.instruction_counter] = BigInt(this.neg_one);
+      this.pB[this.instruction_counter] = BigInt(b);
+      this.pC[this.instruction_counter] = BigInt(a);
+      this.pD[this.instruction_counter] = BigInt(addr);
       this.instructionMapping.set(this.instruction_counter, [
         "neg_one",
         b,
         a,
         addr,
       ]);
-      if (this.instruction_counter == 336) {
-        throw Error(a);
-      }
+      // if (this.instruction_counter == 336) {
+      //   throw Error(a);
+      // }
       this.instruction_counter++;
     }
-    this.trace[addr] = ["sub", a, b];
+    this.trace.set(addr, ["sub", a, b]);
     this.address_counter++;
     return addr;
   }
@@ -209,42 +209,39 @@ class FOpsBuilder {
     // Else return b
     const addr_aux = this.address_counter;
     for (var i = 0; i < 48; i++) {
-      this.pA[this.instruction_counter] = c;
-      this.pB[this.instruction_counter] = a;
-      this.pC[this.instruction_counter] = b;
-      this.pD[this.instruction_counter] = addr_aux;
+      this.pA[this.instruction_counter] = BigInt(c);
+      this.pB[this.instruction_counter] = BigInt(a);
+      this.pC[this.instruction_counter] = BigInt(b);
+      this.pD[this.instruction_counter] = BigInt(addr_aux);
       this.instructionMapping.set(this.instruction_counter, [
         c,
         a,
         b,
         addr_aux,
       ]);
-      if (this.instruction_counter == 336) {
-        throw Error("first", a);
-      }
       this.instruction_counter++;
     }
     this.address_counter++;
     const addr_out = this.address_counter;
     for (var i = 0; i < 48; i++) {
-      this.pA[this.instruction_counter] = c;
-      this.pB[this.instruction_counter] = b;
-      this.pC[this.instruction_counter] = addr_out;
-      this.pD[this.instruction_counter] = addr_aux;
+      this.pA[this.instruction_counter] = BigInt(c);
+      this.pB[this.instruction_counter] = BigInt(b);
+      this.pC[this.instruction_counter] = BigInt(addr_out);
+      this.pD[this.instruction_counter] = BigInt(addr_aux);
       this.instructionMapping.set(this.instruction_counter, [
         c,
         b,
         addr_out,
         addr_aux,
       ]);
-      if (this.instruction_counter == 336) {
-        throw Error("secnod", a);
-      }
+      // if (this.instruction_counter == 336) {
+      //   throw Error("secnod", a);
+      // }
       this.instruction_counter++;
     }
     this.address_counter++;
-    this.trace[addr_aux] = ["cmovAux", c, a, b]; // should be c*a + b
-    this.trace[addr_out] = ["cmov", c, a, b]; // should be c * a + (1-c) * b
+    this.trace.set(addr_aux, ["cmovAux", c, a, b]); // should be c*a + b
+    this.trace.set(addr_out, ["cmov", c, a, b]); // should be c * a + (1-c) * b
     return addr_out;
   }
 

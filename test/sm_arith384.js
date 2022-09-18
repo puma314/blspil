@@ -172,41 +172,41 @@ execute = async function (pols, input) {
   }
 };
 
-describe("test plookup operations", async function () {
-  this.timeout(10000000);
-  const Fr = new F1Field("0xFFFFFFFF00000001");
-  let constPols, cmPols;
-  let pil;
-  before(async function () {
-    const pilTemplate = fs.readFileSync(pilTemplateFile, {
-      encoding: "utf8",
-      flag: "r",
-    });
-    const pilCode = pilTools.generatePilFromTemplate(pilTemplate);
-    fs.writeFileSync(outPilFile, pilCode);
-    pil = await compile(Fr, outPilFile);
-    pilTools.generatePilHelpers(pilTemplateFile, outPilHelperFile);
-    pilHelper = require(outPilHelperFile);
+// describe("test plookup operations", async function () {
+//   this.timeout(10000000);
+//   const Fr = new F1Field("0xFFFFFFFF00000001");
+//   let constPols, cmPols;
+//   let pil;
+//   before(async function () {
+//     const pilTemplate = fs.readFileSync(pilTemplateFile, {
+//       encoding: "utf8",
+//       flag: "r",
+//     });
+//     const pilCode = pilTools.generatePilFromTemplate(pilTemplate);
+//     fs.writeFileSync(outPilFile, pilCode);
+//     pil = await compile(Fr, outPilFile);
+//     pilTools.generatePilHelpers(pilTemplateFile, outPilHelperFile);
+//     pilHelper = require(outPilHelperFile);
 
-    constPols = newConstantPolsArray(pil);
-    await buildConstants(constPols.Arith384);
-  });
+//     constPols = newConstantPolsArray(pil);
+//     await buildConstants(constPols.Arith384);
+//   });
 
-  it("It should verify the binary operations pil", async () => {
-    cmPols = newCommitPolsArray(pil);
-    await execute(cmPols.Arith384, input);
+//   it("It should verify the binary operations pil", async () => {
+//     cmPols = newCommitPolsArray(pil);
+//     await execute(cmPols.Arith384, input);
 
-    const res = await verifyPil(Fr, pil, cmPols, constPols);
+//     const res = await verifyPil(Fr, pil, cmPols, constPols);
 
-    if (res.length != 0) {
-      console.log("Pil does not pass");
-      for (let i = 0; i < res.length; i++) {
-        console.log(res[i]);
-      }
-      assert(0);
-    }
-  });
-});
+//     if (res.length != 0) {
+//       console.log("Pil does not pass");
+//       for (let i = 0; i < res.length; i++) {
+//         console.log(res[i]);
+//       }
+//       assert(0);
+//     }
+//   });
+// });
 
 function prepareInput256bits(input, N, chunks = 16) {
   for (let i = 0; i < input.length; i++) {

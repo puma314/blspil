@@ -52,18 +52,18 @@ function populateArith(pol, bigInt, counter) {
   }
 }
 
+function populateArithCarry(pol, bigInt, counter) {
+  pol[counter] = bigInt;
+}
+
 const executeArith = async function (pols, instructionMapping) {
+  console.log("At top of execute arith");
   // This is assuming we've already filled the ram addr
   instructionMapping.forEach((vals, counter) => {
-    console.log(vals, counter);
     const a = getAsBigInt(pols, vals[0]);
-    console.log(vals[1]);
     const b = getAsBigInt(pols, vals[1]);
     const c = getAsBigInt(pols, vals[2]);
     const d = getAsBigInt(pols, vals[3]);
-    console.log(counter);
-    console.log(a, b, c, d);
-    // console.log(pols.Arith384.a[counter]);
     populateArith(pols.Arith384.a, a, counter);
     populateArith(pols.Arith384.b, b, counter);
     populateArith(pols.Arith384.c, c, counter);
@@ -72,15 +72,35 @@ const executeArith = async function (pols, instructionMapping) {
     const inv = FOps.inv(0xffffffff00000001n); // This is the goldilocks prime
     const dValue = FOps.mul(FOps.sub(FOps.add(FOps.mul(a, b), c), d), inv);
     populateArith(pols.Arith384.d, dValue, counter);
+
   });
+  for (let j = 0; j < 24; j++) {
+    for (let i = instructionMapping.size; i < pols.Arith384.a[j].length; i++) {
+      pols.Arith384.a[j][i] = 0n;
+      pols.Arith384.b[j][i] = 0n;
+      pols.Arith384.c[j][i] = 0n;
+      pols.Arith384.d[j][i] = 0n;
+      pols.Arith384.e[j][i] = 0n;
+    }
+  }
+
+  for (let i = 0; i < pols.Arith384.carry.length; i++) {
+    pols.Arith384.carry[i] = 0n;
+  }
+
+  console.log("End of execute arith");
 };
 
 execute = async function (pols, inputs, trace, constPols) {
-  const ramVals = pols.main.ramVal;
+  console.log("execute", pols.main.ramVal.length);
+  const ramVals = pols.main;
   // Store the inputs in the ram
   for (let i = 0; i < inputs.length; i++) {
+    console.log("storing inputs", inputs[i], i);
     storeToRamAddr(inputs[i], i, pols);
   }
+
+  console.log("Done with inputs");
 
   for (let i = 0; i < constPols.main.isConstant.length; i++) {
     if (constPols.main.isConstant[i] == 1n) {
@@ -92,6 +112,8 @@ execute = async function (pols, inputs, trace, constPols) {
       storeToRamAddr(res, i, pols);
     }
   }
+
+  console.log("Done with constants");
 
   trace.forEach((instruction, addr) => {
     if (instruction[0] == "mul") {
@@ -149,6 +171,7 @@ execute = async function (pols, inputs, trace, constPols) {
       throw Error("Unknown instruction", instruction[0]);
     }
   });
+  console.log("Done with trace");
 };
 
 initialize = async function (pols) {
@@ -170,11 +193,45 @@ initialize = async function (pols) {
 
 initializeCommit = async function (pols) {
   for (let j = 0; j < 8; j++) {
-    for (let i = 0; i < pols.ramVal.length; i++) {
+    for (let i = 0; i < pols.ramVal[j].length; i++) {
       pols.ramVal[j][i] = 0n;
     }
   }
 };
+
+function buidBYTE2(pol, N) {
+  const m = 1 << 16;
+  if (N < m) throw new Error("GLOBAL.BYTE does not fit");
+  for (let i = 0; i < m; i++) {
+    pol[i] = BigInt(i);
+  }
+
+  for (let i = m; i < N; i++) {
+    pol[i] = 0n;
+  }
+}
+
+function buidBYTE(pol, N) {
+  if (N < 256) throw new Error("GLOBAL.BYTE does not fit");
+
+  for (let i = 0; i < 256; i++) {
+    pol[i] = BigInt(i);
+  }
+
+  for (let i = 256; i < N; i++) {
+    pol[i] = 0n;
+  }
+}
+
+function buildL1(pol) {
+  for (let i = 0; i < pol.length; i++) {
+    if (i % 48 == 0) {
+      pol[i] = BigInt(1);
+    } else {
+      pol[i] = BigInt(0);
+    }
+  }
+}
 
 describe("test instructions_build", async function () {
   this.timeout(10000000);
@@ -186,6 +243,9 @@ describe("test instructions_build", async function () {
     constPols = newConstantPolsArray(pil);
     await initialize(constPols);
     await buildConstantsArith(constPols.Arith384);
+    buidBYTE(constPols.Global.BYTE, constPols.Global.BYTE.length);
+    buidBYTE2(constPols.Global.BYTE2, constPols.Global.BYTE.length);
+    buildL1(constPols.Global.L1);
     const instructions = new InstructionsBuilder(constPols);
     const engine = new Engine(instructions);
     engine.G1.add([0n, 1n], [2n, 3n]);
@@ -216,16 +276,19 @@ describe("test instructions_build", async function () {
     const input = [g1[0], g1[1], g1[0], g1[1]];
     cmPols = newCommitPolsArray(pil);
     await initializeCommit(cmPols.main);
+    // console.log("body", cmPols.main);
     await execute(cmPols, input, instructions.trace, constPols);
     await executeArith(cmPols, instructions.instructionMapping);
+    console.log("Done");
 
-    // const res = await verifyPil(Fr, pil, cmPols, constPols);
-    // if (res.length != 0) {
-    //   console.log("Pil does not pass");
-    //   for (let i = 0; i < res.length; i++) {
-    //     console.log(res[i]);
-    //   }
-    //   assert(0);
-    // }
+
+    const res = await verifyPil(Fr, pil, cmPols, constPols);
+    if (res.length != 0) {
+      console.log("Pil does not pass");
+      for (let i = 0; i < res.length; i++) {
+        console.log(res[i]);
+      }
+      assert(0);
+    }
   });
 });
